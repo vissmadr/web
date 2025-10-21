@@ -1,0 +1,26 @@
+{
+  "name": "sandbox",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@packages/easing-functions": "workspace:*",
+    "@packages/pathfinder": "workspace:*",
+    "@packages/sandfall": "workspace:*",
+    "@packages/test": "workspace:*",
+    "@packages/quadtree-simulation": "workspace:*",
+    "@packages/creative": "workspace:*",
+    "@packages/tsunagari": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "latest",
+    "vite": "^6.2.0",
+    "vite-plugin-glsl": "^1.4.1",
+    "vite-plugin-singlefile": "^2.2.0"
+  }
+}

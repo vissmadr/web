@@ -1,0 +1,19 @@
+{
+  "name": "web",
+  "author": "vissmadr",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "check": "turbo run check"
+  },
+  "devDependencies": {
+    "turbo": "^2.5.8",
+    "typescript": "latest"
+  },
+  "packageManager": "pnpm@10.14.0",
+  "engines": {
+    "node": ">=18"
+  }
+}

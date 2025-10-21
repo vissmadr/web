@@ -1,0 +1,22 @@
+{
+  "name": "@packages/learning-noise",
+  "type": "module",
+  "private": true,
+  "exports": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@utilities/data-structures": "workspace:*",
+    "@utilities/mathematics": "workspace:*",
+    "@utilities/canvas2d": "workspace:*",
+    "@utilities/easing": "workspace:*",
+    "@utilities/random": "workspace:*",
+    "@utilities/colors": "workspace:*",
+    "@utilities/webgl": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "latest"
+  }
+}
