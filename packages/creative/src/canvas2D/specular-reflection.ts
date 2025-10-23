@@ -6,7 +6,7 @@ const defaultConfig = {
   height: 600,
 
   scale: 40,
-};
+} as const;
 
 type Config = typeof defaultConfig;
 

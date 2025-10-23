@@ -28,7 +28,7 @@ export namespace Config {
   export const spawnerSize: number = 0.04;
 
   export const limitFPS: boolean = true;
-  export const FPS: number = 60;
+  export const FPS: number = 80;
 
   export const borderSize: number = -0.02;
 
