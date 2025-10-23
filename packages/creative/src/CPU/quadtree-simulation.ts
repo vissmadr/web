@@ -1,21 +1,22 @@
+import { Quadtree } from "@utilities/data-structures";
 import { Random } from "@utilities/random";
 
 const config = {
   FPS: 60,
 
-  width: 800,
-  height: 800,
+  width: 600,
+  height: 600,
 
   particle: {
-    size: 1,
-    count: 3000,
-    color: "#905000",
+    size: 2,
+    count: 2000,
+    color: "#904000",
   },
 
   quadtree: {
     capacity: 10,
-    lineWidth: 1,
-    color: "#005020",
+    lineWidth: 0.4,
+    color: "#009020",
   },
 } as const;
 

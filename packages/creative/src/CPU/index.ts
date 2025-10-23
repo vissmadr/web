@@ -1,5 +1,7 @@
+export * as QuadtreeSimulation from "./quadtree-simulation";
 export * as SpecularReflection from "./specular-reflection";
 export * as NoiseVectorField from "./noise-vector-field";
+export * as EasingFunctions from "./easing-functions";
 export * as RandomWalkers from "./random-walkers";
 export * as NoiseRainbow from "./noise-rainbow";
 export * as NoiseBlanket from "./noise-blanket";

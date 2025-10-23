@@ -1,7 +1,30 @@
 import { Mathematics } from "@utilities/mathematics";
 import { Canvas2D } from "@utilities/canvas2d";
 import { Easing } from "@utilities/easing";
-import { Config } from "./config";
+
+namespace Config {
+  export const width = 600;
+
+  export const left = 100;
+  export const right = 500;
+
+  export const gap = 100;
+
+  export const radius = 8;
+
+  export const increment = 0.006;
+
+  export const text = {
+    x: 300,
+    size: 19,
+    gap: 28,
+  } as const;
+
+  export const colors = {
+    background: "#141414",
+    main: "#909090",
+  } as const;
+}
 
 type NamedEasingFunction = {
   name: string;
@@ -81,11 +104,7 @@ function names(context: CanvasRenderingContext2D) {
   context.fillStyle = Config.colors.main;
 
   for (let i = 0; i < namedEasingFunctions.length; i++) {
-    context.fillText(
-      namedEasingFunctions[i].name,
-      Config.text.x,
-      getHeight(i) - Config.text.gap,
-    );
+    context.fillText(namedEasingFunctions[i].name, Config.text.x, getHeight(i) - Config.text.gap);
   }
 }
 
@@ -101,12 +120,7 @@ function railBackground(context: CanvasRenderingContext2D) {
   const doubleRadius = bufferRadius * 2;
 
   for (let i = 0; i < namedEasingFunctions.length; i++) {
-    context.fillRect(
-      0,
-      getHeight(i) - bufferRadius,
-      Config.width,
-      doubleRadius,
-    );
+    context.fillRect(0, getHeight(i) - bufferRadius, Config.width, doubleRadius);
   }
 }
 
@@ -130,23 +144,13 @@ export function main(canvas: HTMLCanvasElement) {
     for (let i = 0; i < namedEasingFunctions.length; i++) {
       const y = getHeight(i);
 
-      const easing = Mathematics.lerp(
-        Config.left,
-        Config.right,
-        namedEasingFunctions[i].f(time),
-      );
+      const easing = Mathematics.lerp(Config.left, Config.right, namedEasingFunctions[i].f(time));
 
       Canvas2D.circleFill(context, easing, y, Config.radius);
 
       const linear = Mathematics.lerp(Config.left, Config.right, time);
 
-      Canvas2D.line(
-        context,
-        linear,
-        y - Config.radius,
-        linear,
-        y + Config.radius,
-      );
+      Canvas2D.line(context, linear, y - Config.radius, linear, y + Config.radius);
     }
 
     requestAnimationFrame(loop);
