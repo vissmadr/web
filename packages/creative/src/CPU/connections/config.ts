@@ -1,6 +1,6 @@
 export namespace Config {
-  export const width = 900;
-  export const height = 900;
+  export const width = 600;
+  export const height = 600;
 
   export const log = {
     quadtrees: false,
@@ -11,16 +11,16 @@ export namespace Config {
     maxVelocity: Infinity,
     center: {
       active: true,
-      scalar: 0.0001,
+      scalar: 0.00023,
     },
     repulsion: {
       active: true,
-      scalar: 0.045,
+      scalar: 0.054,
     },
     attraction: {
       active: true,
       scalar: 0.00001,
-      idealDistance: 45,
+      idealDistance: 32,
     },
     drag: {
       active: true,
@@ -36,15 +36,15 @@ export namespace Config {
     node: {
       display: true,
       color: "#909090",
-      radius: 8,
+      radius: 6,
     },
     connection: {
       display: true,
       color: "#808080AA",
-      width: 3.0,
+      width: 2.5,
     },
     quadtree: {
-      display: true,
+      display: false,
       color: "#00EE00",
       width: 0.5,
     },
