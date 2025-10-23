@@ -1,9 +1,11 @@
 export namespace Config {
   export const debug = false;
 
+  export const width = 600;
+  export const height = 600;
+
   export const columns: number = 130;
   export const walls: boolean = true;
-  //export const spawnerSize: number = 0.014;
   export const spawnerSize: number = 0.04;
 
   export const limitFPS: boolean = false;

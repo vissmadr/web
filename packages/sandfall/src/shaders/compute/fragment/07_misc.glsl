@@ -1,4 +1,3 @@
-
 void resetCell(inout Cell cell) {
   // cell.rng;
   cell.clock       = 0;

@@ -7,6 +7,17 @@ const int TEMPERATURE_METAL_MELT    = 15000;
 const int TEMPERATURE_SAND_MELT     = 19000;
 const int TEMPERATURE_MAXIMUM       = 30000;
 
+const int TEMPERATURE_SPAWN[8] = int[8](
+  3000,  // DEBUG
+  3000,  // Empty
+  3000,  // Block
+  3000,  // Sand
+  3000,  // Water
+  2000,  // Ice
+  3000,  // Steam
+  12000  // Fire
+);
+
 const int MAX_THERMAL_TRANSFER[8] = int[8](
   -1,    // DEBUG
   100,   // Empty
@@ -34,8 +45,8 @@ const int SPREAD[8] = int[8](
   -1,          // Empty
   -1,          // Block
   SPREAD_LOW,  // Sand
-  SPREAD_HIGH, // Water
+  SPREAD_MID,  // Water
   SPREAD_NONE, // Ice
-  SPREAD_FULL, // Steam
-  SPREAD_FULL  // Fire
+  SPREAD_HIGH, // Steam
+  SPREAD_HIGH  // Fire
 );

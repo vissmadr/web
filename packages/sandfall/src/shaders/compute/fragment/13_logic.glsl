@@ -10,6 +10,11 @@ ivec4 getRandomApplicationPattern() {
 }
 
 void changeBlock(inout Block block) {
+  applyBehavior(block.bl);
+  applyBehavior(block.tl);
+  applyBehavior(block.tr);
+  applyBehavior(block.br);
+
   applyBlockTemperatureTransform(block);
 
   if(block.bl.type <= block.tl.type) applyInteraction(block.bl, block.tl);

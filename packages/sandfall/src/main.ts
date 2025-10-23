@@ -13,12 +13,13 @@ import computeFragmentStructure from "./shaders/compute/fragment/05_structure.gl
 import computeFragmentFetch from "./shaders/compute/fragment/06_fetch.glsl";
 import computeFragmentMisc from "./shaders/compute/fragment/07_misc.glsl";
 import computeFragmentRotation from "./shaders/compute/fragment/08_rotation.glsl";
-import computeFragmentInteraction from "./shaders/compute/fragment/09_interaction.glsl";
-import computeFragmentSwaps from "./shaders/compute/fragment/10_swaps.glsl";
-import computeFragmentTemperature from "./shaders/compute/fragment/11_temperature.glsl";
-import computeFragmentLogic from "./shaders/compute/fragment/12_logic.glsl";
-import computeFragmentSpawn from "./shaders/compute/fragment/13_spawn.glsl";
-import computeFragmentOutput from "./shaders/compute/fragment/14_output.glsl";
+import computeFragmentBehavior from "./shaders/compute/fragment/09_behavior.glsl";
+import computeFragmentInteraction from "./shaders/compute/fragment/10_interaction.glsl";
+import computeFragmentSwaps from "./shaders/compute/fragment/11_swaps.glsl";
+import computeFragmentTemperature from "./shaders/compute/fragment/12_temperature.glsl";
+import computeFragmentLogic from "./shaders/compute/fragment/13_logic.glsl";
+import computeFragmentSpawn from "./shaders/compute/fragment/14_spawn.glsl";
+import computeFragmentOutput from "./shaders/compute/fragment/15_output.glsl";
 import renderVertex from "./shaders/render/vertex.glsl";
 import renderFragment from "./shaders/render/fragment.glsl";
 
@@ -32,6 +33,7 @@ function setupPrograms(gl: WebGL2RenderingContext) {
     computeFragmentFetch +
     computeFragmentMisc +
     computeFragmentRotation +
+    computeFragmentBehavior +
     computeFragmentInteraction +
     computeFragmentSwaps +
     computeFragmentTemperature +
@@ -146,7 +148,8 @@ function setupGL(canvas: HTMLCanvasElement) {
   const gl = canvas.getContext("webgl2");
   if (!gl) throw "Failed to get WebGL2 context";
 
-  canvas.width = canvas.height = 600;
+  canvas.width = Config.width;
+  canvas.height = Config.height;
 
   WebGL.Canvas.resizeToDisplaySize(canvas);
 

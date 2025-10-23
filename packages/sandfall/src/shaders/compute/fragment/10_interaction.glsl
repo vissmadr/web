@@ -21,6 +21,7 @@ int getInteraction(int aType, int bType) {
   }
 
   if(aType == WATER) {
+    if(bType == FIRE) return INTERACTION_WATER_AND_FIRE;
     return INTERACTION_NONE;
   }
 
@@ -40,9 +41,7 @@ int getInteraction(int aType, int bType) {
 }
 
 void blockAndBlock(inout Cell a, inout Cell b) { }
-
 void blockAndSand(inout Cell block, inout Cell sand) { }
-
 void blockAndWater(inout Cell block, inout Cell water) { }
 
 void sandAndWater(inout Cell sand, inout Cell water) {
@@ -60,6 +59,20 @@ void sandAndWater(inout Cell sand, inout Cell water) {
 
 void sandAndSand(inout Cell a, inout Cell b) {
   balanceValues(a.state0, b.state0);
+}
+
+void waterAndFire(inout Cell a, inout Cell b) {
+  int evenTemperature = (a.temperature + b.temperature) / 2;
+
+  resetCell(a);
+  a.type = STEAM;
+  a.velocity = UP;
+  a.temperature = evenTemperature;
+
+  resetCell(b);
+  b.type = STEAM;
+  b.velocity = UP;
+  b.temperature = evenTemperature;
 }
 
 void applyInteraction(inout Cell one, inout Cell two) {
@@ -89,6 +102,11 @@ void applyInteraction(inout Cell one, inout Cell two) {
 
   if(interaction == INTERACTION_SAND_AND_SAND) {
     sandAndSand(one, two);
+    return;
+  }
+
+  if(interaction == INTERACTION_WATER_AND_FIRE) {
+    waterAndFire(one, two);
     return;
   }
 }
