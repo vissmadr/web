@@ -1,13 +1,13 @@
 export function compileShader(
   gl: WebGL2RenderingContext,
   type: "vertex" | "fragment",
-  source: string,
+  glslSourceCode: string,
 ) {
   const shaderType = type === "vertex" ? gl.VERTEX_SHADER : gl.FRAGMENT_SHADER;
   const shader = gl.createShader(shaderType);
   if (!shader) throw new Error("Unable to create shader");
 
-  gl.shaderSource(shader, source);
+  gl.shaderSource(shader, glslSourceCode);
   gl.compileShader(shader);
 
   if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
