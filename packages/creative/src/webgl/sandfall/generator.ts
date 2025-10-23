@@ -30,6 +30,7 @@ export namespace Generator {
     const state: number[] = [];
     for (let i = 0; i < totalCells; i++) {
       const r = Config.walls && isWall(i) ? 2 : 1;
+      // FIX
       const g = 3000;
       const b = 0;
       const a = 0;

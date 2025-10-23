@@ -35,8 +35,6 @@ export namespace Config {
   export const maxSoakedCells: number = 2;
   export const soakPerAbsorb: number = 10;
 
-  //
-
   export const temperature = {
     absoluteZero: 0,
     waterFreeze: 2700,

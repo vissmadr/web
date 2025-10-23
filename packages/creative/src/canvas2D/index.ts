@@ -1,3 +1,4 @@
+export * as SpecularReflection from "./specular-reflection";
 export * as NoiseVectorField from "./noise-vector-field";
 export * as RandomWalkers from "./random-walkers";
 export * as NoiseRainbow from "./noise-rainbow";
