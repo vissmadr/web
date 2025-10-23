@@ -1,2 +1,2 @@
-export * as Canvas2D from "./canvas2D/index";
-export * as WebGL from "./webgl/index";
+export * as CPU from "./CPU/index";
+export * as GPU from "./GPU/index";

@@ -1,4 +1,4 @@
-import { Mathematics } from "../../../../utilities/mathematics/src";
+import { Mathematics } from "@utilities/mathematics";
 import { Noise } from "@utilities/noise";
 
 const defaultConfig = {

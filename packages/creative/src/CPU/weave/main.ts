@@ -4,7 +4,7 @@ import { Vector2 } from "@utilities/data-structures";
 
 import { type Config, defaultConfig } from "./config";
 
-import imagePNG from "./images/final.png";
+import imagePNG from "./final.png";
 
 let config: Config;
 let scale: number;

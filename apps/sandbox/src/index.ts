@@ -4,4 +4,4 @@ const canvasID = "mainCanvas";
 const canvas = document.getElementById(canvasID) as HTMLCanvasElement;
 if (!canvas) throw `Cannot get #${canvasID}`;
 
-Creative.Canvas2D.Weave.main(canvas)
+Creative.GPU.Water.main(canvas)
