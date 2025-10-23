@@ -25,7 +25,6 @@ export namespace Grid {
   }
 
   function setNeighborsRectangle() {
-    //prettier-ignore
     for (let x = 0; x < Config.cols; x++) {
       for (let y = 0; y < Config.rows; y++) {
         const cell = cells[x][y];
@@ -63,7 +62,6 @@ export namespace Grid {
   }
 
   function setNeighborsHex() {
-    //prettier-ignore
     for (let x = 0; x < Config.cols; x++) {
       for (let y = 0; y < Config.rows; y++) {
         const cell = cells[x][y];

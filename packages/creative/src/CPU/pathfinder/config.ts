@@ -1,5 +1,5 @@
 export namespace Config {
-  export enum Grid {
+  enum Grid {
     RECTANGLE,
     HEXAGON,
   }
@@ -18,8 +18,8 @@ export namespace Config {
 
   export const runtime: Runtime = Runtime.ANIMATED;
 
-  export const width = 800;
-  export const height = 800;
+  export const width = 600;
+  export const height = 600;
 
   export const cols = 100;
   export const rows = 100;
@@ -36,7 +36,7 @@ export namespace Config {
     terrainCost: 0,
   } as const;
 
-  export const animationStepIncrement = 0.02;
+  export const animationStepIncrement = 0.03;
 
   export const colors = {
     debug: "#FF00FF",
@@ -48,9 +48,9 @@ export namespace Config {
   } as const;
 
   export const terrain = {
-    blocks: 0.5,
+    blocks: 0.36,
     rough: 0,
 
-    noiseScalar: 0.07,
+    noiseScalar: 0.2,
   } as const;
 }
