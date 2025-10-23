@@ -11,8 +11,12 @@ export namespace Input {
     return spawnKey;
   }
 
-  export function getPointerCoordinates() {
-    return pointerCoordinates;
+  export function getPointerX() {
+    return pointerCoordinates.x;
+  }
+
+  export function getPointerY() {
+    return pointerCoordinates.y;
   }
 
   export function getIsPointerDown() {

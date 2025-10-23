@@ -4,31 +4,8 @@ precision highp float;
 precision highp isampler2D;
 
 // ----------
-// -- Data --
+// -- Enum --
 // ----------
-
-in vec2 v_coordinates;
-
-layout(location = 0) out ivec4 output0;
-layout(location = 1) out ivec4 output1;
-layout(location = 2) out ivec4 output2;
-
-uniform isampler2D u_inputTexture0;
-uniform isampler2D u_inputTexture1;
-uniform isampler2D u_inputTexture2;
-
-uniform bool u_isPointerDown;
-uniform int u_time;
-uniform int u_random;
-uniform int u_inputKey;
-uniform int u_maxSoakedCells;
-uniform int u_soakPerAbsorb;
-uniform float u_spawnerSize;
-uniform vec2 u_pointerPosition;
-
-// -----------
-// -- Enums --
-// -----------
 
 const int DEBUG = 0;
 const int EMPTY = 1;
@@ -59,71 +36,131 @@ const int INTERACTION_SAND_AND_WATER  = 5;
 const int INTERACTION_WATER_AND_WATER = 6;
 const int INTERACTION_WATER_AND_FIRE  = 7;
 
-// ------------
-// -- Config --
-// ------------
+// ----------
+// -- Data --
+// ----------
 
+in vec2 v_coordinates;
 
-// -- Config --
+layout(location = 0) out ivec4 output0;
+layout(location = 1) out ivec4 output1;
+layout(location = 2) out ivec4 output2;
 
-// TODO: get from CPU config
-const int TEMPERATURE_ABSOLUTE_ZERO = 0;
-const int TEMPERATURE_WATER_FREEZE  = 2700;
-const int TEMPERATURE_NORMAL        = 3000;
-const int TEMPERATURE_WATER_BOIL    = 3700;
-const int TEMPERATURE_WOOD_BURN     = 8000;
-const int TEMPERATURE_METAL_MELT    = 15000;
-const int TEMPERATURE_SAND_MELT     = 19000;
-const int TEMPERATURE_MAXIMUM       = 30000;
+uniform isampler2D u_inputTexture0;
+uniform isampler2D u_inputTexture1;
+uniform isampler2D u_inputTexture2;
 
-const int TEMPERATURE_SPAWN[8] = int[8](
-  3000,  // DEBUG
-  3000,  // Empty
-  3000,  // Block
-  3000,  // Sand
-  3000,  // Water
-  2000,  // Ice
-  3000,  // Steam
-  12000  // Fire
-);
+uniform int u_time;
+uniform int u_random;
 
-const int MAX_THERMAL_TRANSFER[8] = int[8](
-  -1,    // DEBUG
-  100,   // Empty
-  1000,  // Block
-  1000,  // Sand
-  1000,  // Water
-  1000,  // Ice
-  1000,  // Steam
-  1000   // Fire
-);
+uniform int u_inputKey;
+uniform float u_spawnerSize;
+uniform bool u_isPointerDown;
+uniform vec2 u_pointerPosition;
 
-const int DENSITY[8] = int[8](
-  0, // DEBUG
-  0, // Empty
-  9, // Block
-  4, // Sand
-  3, // Water
-  9, // Ice
-  2, // Steam
-  1  // Fire
-);
+uniform int u_soakPerAbsorb;
+uniform int u_maxSoakedCells;
 
-const int SPREAD[8] = int[8](
-  SPREAD_NONE, // DEBUG
-  SPREAD_NONE, // Empty
-  SPREAD_NONE, // Block
+uniform int u_temperatureAbsoluteZero;
+uniform int u_temperatureWaterFreeze;
+uniform int u_temperatureNormal;
+uniform int u_temperatureWaterBoil;
+uniform int u_temperatureWoodBurn;
+uniform int u_temperatureMetalMelt;
+uniform int u_temperatureSandMelt;
+uniform int u_temperatureMaximum;
 
-  SPREAD_LOW,  // Sand
-  SPREAD_MID,  // Water
-  SPREAD_NONE, // Ice
-  SPREAD_HIGH, // Steam
-  SPREAD_HIGH  // Fire
-);
+uniform int u_temperatureSpawnDebug;
+uniform int u_temperatureSpawnEmpty;
+uniform int u_temperatureSpawnBlock;
+uniform int u_temperatureSpawnSand;
+uniform int u_temperatureSpawnWater;
+uniform int u_temperatureSpawnIce;
+uniform int u_temperatureSpawnSteam;
+uniform int u_temperatureSpawnFire;
 
-// -------------
-// -- Structs --
-// -------------
+uniform int u_maxThermalTransferDebug;
+uniform int u_maxThermalTransferEmpty;
+uniform int u_maxThermalTransferBlock;
+uniform int u_maxThermalTransferSand;
+uniform int u_maxThermalTransferWater;
+uniform int u_maxThermalTransferIce;
+uniform int u_maxThermalTransferSteam;
+uniform int u_maxThermalTransferFire;
+
+uniform int u_densityDebug;
+uniform int u_densityEmpty;
+uniform int u_densityBlock;
+uniform int u_densitySand;
+uniform int u_densityWater;
+uniform int u_densityIce;
+uniform int u_densitySteam;
+uniform int u_densityFire;
+
+uniform int u_spreadDebug;
+uniform int u_spreadEmpty;
+uniform int u_spreadBlock;
+uniform int u_spreadSand;
+uniform int u_spreadWater;
+uniform int u_spreadIce;
+uniform int u_spreadSteam;
+uniform int u_spreadFire;
+
+int getTemperatureSpawn(int type) {
+  switch(type) {
+    case DEBUG: return u_temperatureSpawnDebug;
+    case EMPTY: return u_temperatureSpawnEmpty;
+    case BLOCK: return u_temperatureSpawnBlock;
+    case SAND:  return u_temperatureSpawnSand;
+    case WATER: return u_temperatureSpawnWater;
+    case ICE:   return u_temperatureSpawnIce;
+    case STEAM: return u_temperatureSpawnSteam;
+    case FIRE:  return u_temperatureSpawnFire;
+    default:    return u_temperatureSpawnDebug;
+  }
+}
+
+int getMaxThermalTransfer(int type) {
+  switch(type) {
+    case DEBUG: return u_maxThermalTransferDebug;
+    case EMPTY: return u_maxThermalTransferEmpty;
+    case BLOCK: return u_maxThermalTransferBlock;
+    case SAND:  return u_maxThermalTransferSand;
+    case WATER: return u_maxThermalTransferWater;
+    case ICE:   return u_maxThermalTransferIce;
+    case STEAM: return u_maxThermalTransferSteam;
+    case FIRE:  return u_maxThermalTransferFire;
+    default:    return u_maxThermalTransferDebug;
+  }
+}
+
+int getSpread(int type) {
+  switch(type) {
+    case DEBUG: return u_spreadDebug;
+    case EMPTY: return u_spreadEmpty;
+    case BLOCK: return u_spreadBlock;
+    case SAND:  return u_spreadSand;
+    case WATER: return u_spreadWater;
+    case ICE:   return u_spreadIce;
+    case STEAM: return u_spreadSteam;
+    case FIRE:  return u_spreadFire;
+    default:    return u_spreadDebug;
+  }
+}
+
+int getDensity(int type) {
+  switch(type) {
+    case DEBUG: return u_densityDebug;
+    case EMPTY: return u_densityEmpty;
+    case BLOCK: return u_densityBlock;
+    case SAND:  return u_densitySand;
+    case WATER: return u_densityWater;
+    case ICE:   return u_densityIce;
+    case STEAM: return u_densitySteam;
+    case FIRE:  return u_densityFire;
+    default:    return u_densityDebug;
+  }
+}
 
 struct Cell {
   int rng;
@@ -233,7 +270,7 @@ void resetCell(inout Cell cell) {
   cell.empty1      = 0;
 
   cell.type        = DEBUG;
-  cell.temperature = TEMPERATURE_NORMAL;
+  cell.temperature = u_temperatureNormal;
   cell.velocity    = 0;
   cell.isMoved     = 0;
 
@@ -328,7 +365,7 @@ void fireBehavior(inout Cell cell) {
     } else {
       resetCell(cell);
       cell.type = EMPTY;
-      cell.temperature = TEMPERATURE_NORMAL;
+      cell.temperature = u_temperatureNormal;
     }
   }
 }
@@ -337,7 +374,7 @@ void steamBehavior(inout Cell cell) {
   if(cell.clock + cell.rng >= 120) {
     resetCell(cell);
     cell.type = EMPTY;
-    cell.temperature = TEMPERATURE_NORMAL;
+    cell.temperature = u_temperatureNormal;
   }
 }
 
@@ -477,10 +514,10 @@ void applyInteraction(inout Cell one, inout Cell two) {
 bool canSwap(Cell a, Cell b) {
   if(a.type == b.type) {
     if(a.type == WATER || a.type == STEAM || a.type == FIRE)
-      return DENSITY[a.type] >= DENSITY[b.type];
+      return getDensity(a.type) >= getDensity(b.type);
   }
 
-  return DENSITY[a.type] > DENSITY[b.type];
+  return getDensity(a.type) > getDensity(b.type);
 }
 
 void swapCells(inout Cell a, inout Cell b) {
@@ -497,7 +534,7 @@ void applySwapsToBL(inout Block block) {
   if(block.bl.isMoved == 1) return;
   if(block.bl.velocity == 0) return;
 
-  int spread = SPREAD[block.bl.type];
+  int spread = getSpread(block.bl.type);
 
   // TODO: should those be if or else-if?
 
@@ -566,8 +603,8 @@ void diffuseTemperature(inout Cell a, inout Cell b) {
   if (abs(a.temperature - b.temperature) < 2) return;
 
   int rateLimit = min(
-    MAX_THERMAL_TRANSFER[a.type],
-    MAX_THERMAL_TRANSFER[b.type]
+    getMaxThermalTransfer(a.type),
+    getMaxThermalTransfer(b.type)
   );
 
   if (a.temperature > b.temperature) {
@@ -614,13 +651,13 @@ void transformCellByTemperature(inout Cell cell) {
   }
 
   if(type == SAND) {
-    if(temperature >= TEMPERATURE_SAND_MELT) {
+    if(temperature >= u_temperatureSandMelt) {
       return;
     }
   }
 
   if(type == WATER) {
-    if(temperature <= TEMPERATURE_WATER_FREEZE) {
+    if(temperature <= u_temperatureWaterFreeze) {
       resetCell(cell);
       cell.type = ICE;
       cell.temperature = temperature;
@@ -631,7 +668,7 @@ void transformCellByTemperature(inout Cell cell) {
   }
 
   if(type == ICE) {
-    if(temperature > TEMPERATURE_WATER_FREEZE) {
+    if(temperature > u_temperatureWaterFreeze) {
       resetCell(cell);
       cell.type = WATER;
       cell.temperature = temperature;
@@ -642,7 +679,7 @@ void transformCellByTemperature(inout Cell cell) {
   }
 
   if(type == STEAM) {
-    if(temperature <= TEMPERATURE_WATER_BOIL) {
+    if(temperature <= u_temperatureWaterBoil) {
       return;
     }
     return;
@@ -729,7 +766,7 @@ Cell spawnCell(ivec2 grid) {
   if (type == SAND || type == WATER) cell.velocity = DOWN;
   if (type == FIRE || type == STEAM) cell.velocity = UP;
 
-  cell.temperature = TEMPERATURE_SPAWN[cell.type];
+  cell.temperature = getTemperatureSpawn(cell.type);
 
   return cell;
 }
