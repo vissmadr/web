@@ -9,13 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@packages/easing-functions": "workspace:*",
-    "@packages/pathfinder": "workspace:*",
-    "@packages/sandfall": "workspace:*",
-    "@packages/test": "workspace:*",
-    "@packages/quadtree-simulation": "workspace:*",
     "@packages/creative": "workspace:*",
-    "@packages/tsunagari": "workspace:*"
+    "@packages/test": "workspace:*"
   },
   "devDependencies": {
     "typescript": "latest",

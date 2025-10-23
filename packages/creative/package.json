@@ -11,6 +11,7 @@
     "@utilities/data-structures": "workspace:*",
     "@utilities/mathematics": "workspace:*",
     "@utilities/canvas2d": "workspace:*",
+    "@utilities/shapes": "workspace:*",
     "@utilities/easing": "workspace:*",
     "@utilities/collision": "workspace:*",
     "@utilities/colors": "workspace:*",

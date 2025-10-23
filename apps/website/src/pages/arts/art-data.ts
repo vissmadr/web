@@ -51,7 +51,7 @@ export const artData: ArtData<any>[] = [
       ArtTagNames.Image,
       ArtTagNames.Noise,
     ],
-    artMain: Creative.Canvas2D.TheSeer.main,
+    artMain: Creative.CPU.TheSeer.main,
   }),
 
   defineArt({
@@ -64,7 +64,7 @@ export const artData: ArtData<any>[] = [
       ArtTagNames.Noise,
       ArtTagNames.Random,
     ],
-    artMain: Creative.Canvas2D.SystemShock.main,
+    artMain: Creative.CPU.SystemShock.main,
     description: "Description of System Shock",
   }),
 
@@ -78,7 +78,7 @@ export const artData: ArtData<any>[] = [
       ArtTagNames.Particles,
       ArtTagNames.Noise,
     ],
-    artMain: Creative.WebGL.Wealth.main,
+    artMain: Creative.GPU.Wealth.main,
   }),
 
   defineArt({
@@ -86,7 +86,7 @@ export const artData: ArtData<any>[] = [
     route: Routes.arts.gameOfLife,
     thumbnail: gameOfLifePNG,
     tags: [ArtTagNames.Input, ArtTagNames.GPU, ArtTagNames.Automata],
-    artMain: Creative.WebGL.GameOfLife.main,
+    artMain: Creative.GPU.GameOfLife.main,
   }),
 
   defineArt({
@@ -94,7 +94,7 @@ export const artData: ArtData<any>[] = [
     route: Routes.arts.layers,
     thumbnail: layersPNG,
     tags: [ArtTagNames.Input, ArtTagNames.GPU, ArtTagNames.Image],
-    artMain: Creative.WebGL.Layers.main,
+    artMain: Creative.GPU.Layers.main,
   }),
 
   defineArt({
@@ -102,7 +102,7 @@ export const artData: ArtData<any>[] = [
     route: Routes.arts.overgrowth,
     thumbnail: overgrowthPNG,
     tags: [ArtTagNames.Input, ArtTagNames.Particles, ArtTagNames.Noise],
-    artMain: Creative.Canvas2D.Overgrowth.main,
+    artMain: Creative.CPU.Overgrowth.main,
     description: "Description of Overgrowth.",
   }),
 
@@ -111,7 +111,7 @@ export const artData: ArtData<any>[] = [
     route: Routes.arts.firecrackers,
     thumbnail: firecrackersPNG,
     tags: [ArtTagNames.Input, ArtTagNames.Particles, ArtTagNames.Noise],
-    artMain: Creative.Canvas2D.Firecrackers.main,
+    artMain: Creative.CPU.Firecrackers.main,
   }),
 
   defineArt({
@@ -119,7 +119,7 @@ export const artData: ArtData<any>[] = [
     route: Routes.arts.randomWalkers,
     thumbnail: randomWalkersPNG,
     tags: [ArtTagNames.Random],
-    artMain: Creative.Canvas2D.RandomWalkers.main,
+    artMain: Creative.CPU.RandomWalkers.main,
   }),
 
   defineArt({
@@ -127,7 +127,7 @@ export const artData: ArtData<any>[] = [
     route: Routes.arts.weave,
     thumbnail: weavePNG,
     tags: [ArtTagNames.Bright, ArtTagNames.Image, ArtTagNames.Random],
-    artMain: Creative.Canvas2D.Weave.main,
+    artMain: Creative.CPU.Weave.main,
   }),
 
   defineArt({
@@ -135,7 +135,7 @@ export const artData: ArtData<any>[] = [
     route: Routes.arts.stars,
     thumbnail: starsPNG,
     tags: [ArtTagNames.GPU, ArtTagNames.Particles, ArtTagNames.Random],
-    artMain: Creative.WebGL.Stars.main,
+    artMain: Creative.GPU.Stars.main,
   }),
 
   defineArt({
@@ -143,7 +143,7 @@ export const artData: ArtData<any>[] = [
     route: Routes.arts.tenThousand,
     thumbnail: tenThousandPNG,
     tags: [ArtTagNames.GPU, ArtTagNames.Particles, ArtTagNames.Image],
-    artMain: Creative.WebGL.TenThousand.main,
+    artMain: Creative.GPU.TenThousand.main,
   }),
 
   defineArt({
@@ -151,7 +151,7 @@ export const artData: ArtData<any>[] = [
     route: Routes.arts.anger,
     thumbnail: angerPNG,
     tags: [ArtTagNames.GPU, ArtTagNames.Noise],
-    artMain: Creative.WebGL.Anger.main,
+    artMain: Creative.GPU.Anger.main,
   }),
 
   defineArt({
@@ -159,7 +159,7 @@ export const artData: ArtData<any>[] = [
     route: Routes.arts.regeneration,
     thumbnail: regenerationPNG,
     tags: [ArtTagNames.Input, ArtTagNames.GPU, ArtTagNames.Particles],
-    artMain: Creative.WebGL.Regeneration.main,
+    artMain: Creative.GPU.Regeneration.main,
   }),
 
   defineArt({
@@ -167,7 +167,7 @@ export const artData: ArtData<any>[] = [
     route: Routes.arts.trigonometry,
     thumbnail: trigonometryPNG,
     tags: [ArtTagNames.Education],
-    artMain: Creative.Canvas2D.Trigonometry.main,
+    artMain: Creative.CPU.Trigonometry.main,
   }),
 
   defineArt({
@@ -175,7 +175,7 @@ export const artData: ArtData<any>[] = [
     route: Routes.arts.noiseLoop,
     thumbnail: noiseLoopPNG,
     tags: [ArtTagNames.Noise],
-    artMain: Creative.Canvas2D.NoiseLoop.main,
+    artMain: Creative.CPU.NoiseLoop.main,
   }),
 
   defineArt({
@@ -183,7 +183,7 @@ export const artData: ArtData<any>[] = [
     route: Routes.arts.noise2D,
     thumbnail: noise2DPNG,
     tags: [ArtTagNames.GPU, ArtTagNames.Noise],
-    artMain: Creative.WebGL.Noise2D.main,
+    artMain: Creative.GPU.Noise2D.main,
   }),
 
   defineArt({
@@ -191,7 +191,7 @@ export const artData: ArtData<any>[] = [
     route: Routes.arts.noiseVectorField,
     thumbnail: noiseVectorFieldPNG,
     tags: [ArtTagNames.Noise],
-    artMain: Creative.Canvas2D.NoiseVectorField.main,
+    artMain: Creative.CPU.NoiseVectorField.main,
   }),
 
   defineArt({
@@ -199,7 +199,7 @@ export const artData: ArtData<any>[] = [
     route: Routes.arts.noiseBlanket,
     thumbnail: noiseBlanketPNG,
     tags: [ArtTagNames.Noise],
-    artMain: Creative.Canvas2D.NoiseBlanket.main,
+    artMain: Creative.CPU.NoiseBlanket.main,
   }),
 
   defineArt({
@@ -207,7 +207,7 @@ export const artData: ArtData<any>[] = [
     route: Routes.arts.noiseAscii,
     thumbnail: noiseAsciiPNG,
     tags: [ArtTagNames.Noise, ArtTagNames.ASCII],
-    artMain: Creative.Canvas2D.NoiseAscii.main,
+    artMain: Creative.CPU.NoiseAscii.main,
   }),
 
   defineArt({
@@ -215,6 +215,6 @@ export const artData: ArtData<any>[] = [
     route: Routes.arts.noiseRainbow,
     thumbnail: noiseRainbow,
     tags: [ArtTagNames.Noise],
-    artMain: Creative.Canvas2D.NoiseRainbow.main,
+    artMain: Creative.CPU.NoiseRainbow.main,
   }),
 ] as const;

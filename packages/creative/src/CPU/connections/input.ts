@@ -1,6 +1,5 @@
 import { Collision } from "@utilities/collision";
 import { Rectangle } from "@utilities/shapes";
-
 import { Config } from "./config";
 import { Node } from "./node";
 import { Quadtree, Vector2 } from "@utilities/data-structures";
@@ -32,19 +31,11 @@ export class Input {
   }
 
   main(quadtree: Quadtree<Node, any>, nodes: Node[]) {
-    const inCanvas = Collision.point_rectangle(
-      this.position.x,
-      this.position.y,
-      0,
-      0,
-      Config.width,
-      Config.height,
-    );
+    const inCanvas = Collision.point_rectangle(this.position.x, this.position.y, 0, 0, Config.width, Config.height);
     if (!inCanvas) return;
 
     if (this.isClicked) {
-      this.targetedNodeID !== null &&
-        nodes[this.targetedNodeID].position.copy(this.position);
+      this.targetedNodeID !== null && nodes[this.targetedNodeID].position.copy(this.position);
 
       return;
     }
@@ -60,15 +51,7 @@ export class Input {
 
     const nodesInArea = quadtree.query(targetArea);
     for (const target of nodesInArea) {
-      if (
-        Collision.point_circle(
-          this.position.x,
-          this.position.y,
-          target.x,
-          target.y,
-          Config.render.node.radius,
-        )
-      ) {
+      if (Collision.point_circle(this.position.x, this.position.y, target.x, target.y, Config.render.node.radius)) {
         this.targetedNodeID = target.id;
 
         this.isClicked && target.position.copy(this.position);
