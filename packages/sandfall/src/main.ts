@@ -5,44 +5,13 @@ import { Config } from "./config";
 import { Input } from "./input";
 
 import computeVertex from "./shaders/compute/vertex.glsl";
-import computeFragmentMain from "./shaders/compute/fragment/01_main.glsl";
-import computeFragmentData from "./shaders/compute/fragment/02_data.glsl";
-import computeFragmentEnums from "./shaders/compute/fragment/03_enums.glsl";
-import computeFragmentConfig from "./shaders/compute/fragment/04_config.glsl";
-import computeFragmentStructure from "./shaders/compute/fragment/05_structure.glsl";
-import computeFragmentFetch from "./shaders/compute/fragment/06_fetch.glsl";
-import computeFragmentMisc from "./shaders/compute/fragment/07_misc.glsl";
-import computeFragmentRotation from "./shaders/compute/fragment/08_rotation.glsl";
-import computeFragmentBehavior from "./shaders/compute/fragment/09_behavior.glsl";
-import computeFragmentInteraction from "./shaders/compute/fragment/10_interaction.glsl";
-import computeFragmentSwaps from "./shaders/compute/fragment/11_swaps.glsl";
-import computeFragmentTemperature from "./shaders/compute/fragment/12_temperature.glsl";
-import computeFragmentLogic from "./shaders/compute/fragment/13_logic.glsl";
-import computeFragmentSpawn from "./shaders/compute/fragment/14_spawn.glsl";
-import computeFragmentOutput from "./shaders/compute/fragment/15_output.glsl";
+import computeFragment from "./shaders/compute/fragment.glsl";
 import renderVertex from "./shaders/render/vertex.glsl";
 import renderFragment from "./shaders/render/fragment.glsl";
 
 function setupPrograms(gl: WebGL2RenderingContext) {
-  const combinedComputeFragment =
-    computeFragmentMain +
-    computeFragmentData +
-    computeFragmentEnums +
-    computeFragmentConfig +
-    computeFragmentStructure +
-    computeFragmentFetch +
-    computeFragmentMisc +
-    computeFragmentRotation +
-    computeFragmentBehavior +
-    computeFragmentInteraction +
-    computeFragmentSwaps +
-    computeFragmentTemperature +
-    computeFragmentLogic +
-    computeFragmentSpawn +
-    computeFragmentOutput;
-
   const computeVS = WebGL.Setup.compileShader(gl, "vertex", computeVertex);
-  const computeFS = WebGL.Setup.compileShader(gl, "fragment", combinedComputeFragment);
+  const computeFS = WebGL.Setup.compileShader(gl, "fragment", computeFragment);
   const renderVS = WebGL.Setup.compileShader(gl, "vertex", renderVertex);
   const renderFS = WebGL.Setup.compileShader(gl, "fragment", renderFragment);
 
