@@ -1,23 +1,24 @@
 import { WebGL } from "@utilities/webgl";
+import { Random } from "@utilities/random";
 import { Generator } from "./generator";
 import { Config } from "./config";
 import { Input } from "./input";
 
 import computeVertex from "./shaders/compute/vertex.glsl";
-import computeFragmentConfig from "./shaders/compute/fragment/config.glsl";
-import computeFragmentData from "./shaders/compute/fragment/data.glsl";
-import computeFragmentEnums from "./shaders/compute/fragment/enums.glsl";
-import computeFragmentFetch from "./shaders/compute/fragment/fetch.glsl";
-import computeFragmentSpawn from "./shaders/compute/fragment/spawn.glsl";
-import computeFragmentInteraction from "./shaders/compute/fragment/interaction.glsl";
-import computeFragmentLogic from "./shaders/compute/fragment/logic.glsl";
-import computeFragmentMain from "./shaders/compute/fragment/main.glsl";
-import computeFragmentMisc from "./shaders/compute/fragment/misc.glsl";
-import computeFragmentOutput from "./shaders/compute/fragment/output.glsl";
-import computeFragmentRotation from "./shaders/compute/fragment/rotation.glsl";
-import computeFragmentStructure from "./shaders/compute/fragment/structure.glsl";
-import computeFragmentSwaps from "./shaders/compute/fragment/swaps.glsl";
-import computeFragmentTemperature from "./shaders/compute/fragment/temperature.glsl";
+import computeFragmentMain from "./shaders/compute/fragment/01_main.glsl";
+import computeFragmentData from "./shaders/compute/fragment/02_data.glsl";
+import computeFragmentEnums from "./shaders/compute/fragment/03_enums.glsl";
+import computeFragmentConfig from "./shaders/compute/fragment/04_config.glsl";
+import computeFragmentStructure from "./shaders/compute/fragment/05_structure.glsl";
+import computeFragmentFetch from "./shaders/compute/fragment/06_fetch.glsl";
+import computeFragmentMisc from "./shaders/compute/fragment/07_misc.glsl";
+import computeFragmentRotation from "./shaders/compute/fragment/08_rotation.glsl";
+import computeFragmentInteraction from "./shaders/compute/fragment/09_interaction.glsl";
+import computeFragmentSwaps from "./shaders/compute/fragment/10_swaps.glsl";
+import computeFragmentTemperature from "./shaders/compute/fragment/11_temperature.glsl";
+import computeFragmentLogic from "./shaders/compute/fragment/12_logic.glsl";
+import computeFragmentSpawn from "./shaders/compute/fragment/13_spawn.glsl";
+import computeFragmentOutput from "./shaders/compute/fragment/14_output.glsl";
 import renderVertex from "./shaders/render/vertex.glsl";
 import renderFragment from "./shaders/render/fragment.glsl";
 
@@ -141,13 +142,15 @@ function setupState(gl: WebGL2RenderingContext, computeProgram: WebGLProgram, re
   return { locations, vertexArrayObjects, textures, framebuffers };
 }
 
-function setupGL(canvas: HTMLCanvasElement){
+function setupGL(canvas: HTMLCanvasElement) {
   const gl = canvas.getContext("webgl2");
   if (!gl) throw "Failed to get WebGL2 context";
 
+  canvas.width = canvas.height = 600;
+
   WebGL.Canvas.resizeToDisplaySize(canvas);
 
-  gl.viewport(0, 0, this.canvas.width, this.canvas.height);
+  gl.viewport(0, 0, canvas.width, canvas.height);
   gl.clearColor(0.08, 0.08, 0.08, 1.0);
 
   return gl;
@@ -156,12 +159,11 @@ function setupGL(canvas: HTMLCanvasElement){
 export function main(canvas: HTMLCanvasElement) {
   const gl = setupGL(canvas);
 
-  const input = new Input();
-  input.setup(canvas);
+  Input.setup(canvas);
 
   const programs = setupPrograms(gl);
 
-  const { locations, vertexArrayObjects, textures, framebuffers } = setupState(gl, programs);
+  const { locations, vertexArrayObjects, textures, framebuffers } = setupState(gl, programs.compute, programs.render);
 
   let time: number = 0;
 
@@ -182,28 +184,28 @@ export function main(canvas: HTMLCanvasElement) {
     gl.activeTexture(gl.TEXTURE2);
     gl.bindTexture(gl.TEXTURE_2D, textures.main2);
 
-    gl.useProgram(programs.update);
+    gl.useProgram(programs.compute);
     gl.bindVertexArray(vertexArrayObjects.update);
 
-    gl.uniform1i(locations.update.uInputTexture0, 0);
-    gl.uniform1i(locations.update.uInputTexture1, 1);
-    gl.uniform1i(locations.update.uInputTexture2, 2);
-    gl.uniform1i(locations.update.uIsPointerDown, Number(this.input.getIsPointerDown()));
-    gl.uniform1i(locations.update.uTime, time);
-    gl.uniform1i(locations.update.uRandom, Random.rangeInt(0, 65000));
-    gl.uniform1i(locations.update.uInputKey, this.input.getSpawnKey());
-    gl.uniform1i(locations.update.uMaxSoakedCells, Config.maxSoakedCells);
-    gl.uniform1i(locations.update.uSoakPerAbsorb, Config.soakPerAbsorb);
-    gl.uniform1f(locations.update.uSpawnerSize, Config.spawnerSize);
-    const pointerCoordinates = this.input.getPointerCoordinates();
-    gl.uniform2f(locations.update.uPointerPosition, pointerCoordinates.x, pointerCoordinates.y);
+    gl.uniform1i(locations.compute.uInputTexture0, 0);
+    gl.uniform1i(locations.compute.uInputTexture1, 1);
+    gl.uniform1i(locations.compute.uInputTexture2, 2);
+    gl.uniform1i(locations.compute.uIsPointerDown, Number(Input.getIsPointerDown()));
+    gl.uniform1i(locations.compute.uTime, time);
+    gl.uniform1i(locations.compute.uRandom, Random.rangeInt(0, 65000));
+    gl.uniform1i(locations.compute.uInputKey, Input.getSpawnKey());
+    gl.uniform1i(locations.compute.uMaxSoakedCells, Config.maxSoakedCells);
+    gl.uniform1i(locations.compute.uSoakPerAbsorb, Config.soakPerAbsorb);
+    gl.uniform1f(locations.compute.uSpawnerSize, Config.spawnerSize);
+    const pointerCoordinates = Input.getPointerCoordinates();
+    gl.uniform2f(locations.compute.uPointerPosition, pointerCoordinates.x, pointerCoordinates.y);
 
     gl.drawArrays(gl.TRIANGLES, 0, 6);
   };
 
   const renderLoop = () => {
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-    gl.viewport(0, 0, this.canvas.width, this.canvas.height);
+    gl.viewport(0, 0, canvas.width, canvas.height);
 
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, textures.aux0);
@@ -222,14 +224,14 @@ export function main(canvas: HTMLCanvasElement) {
     gl.uniform1i(locations.render.uOutputTexture2, 2);
     gl.uniform1i(locations.render.uMaxSoakedCells, Config.maxSoakedCells);
     gl.uniform1i(locations.render.uSoakPerAbsorb, Config.soakPerAbsorb);
-    gl.uniform1f(locations.render.uCanvas, this.canvas.width);
+    gl.uniform1f(locations.render.uCanvas, canvas.width);
     gl.uniform1f(locations.render.uColumns, Config.columns);
     gl.uniform1f(locations.render.uBorderSize, Config.borderSize);
 
     gl.drawArrays(gl.POINTS, 0, Config.columns ** 2);
   };
 
-  const mainLoop = () => {
+  const loop = () => {
     updateLoop();
     renderLoop();
 
@@ -247,12 +249,12 @@ export function main(canvas: HTMLCanvasElement) {
     textures.main2 = textures.aux2;
     textures.aux2 = swap2;
 
-    if (!Config.debug && !Config.limitFPS) requestAnimationFrame(mainLoop);
+    if (!Config.debug && !Config.limitFPS) requestAnimationFrame(loop);
   };
 
-  mainLoop();
+  requestAnimationFrame(loop);
 
-  if (Config.debug) this.input.setOnDebug(mainLoop);
+  if (Config.debug) Input.setOnDebug(loop);
 
-  if (!Config.debug && Config.limitFPS) setInterval(mainLoop, 1000 / Config.FPS);
+  if (!Config.debug && Config.limitFPS) setInterval(loop, 1000 / Config.FPS);
 }

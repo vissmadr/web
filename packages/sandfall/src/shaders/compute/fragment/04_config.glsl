@@ -9,7 +9,7 @@ const int TEMPERATURE_MAXIMUM       = 30000;
 
 const int MAX_THERMAL_TRANSFER[8] = int[8](
   -1,    // DEBUG
-  100,  // Empty
+  100,   // Empty
   1000,  // Block
   1000,  // Sand
   1000,  // Water
@@ -34,7 +34,7 @@ const int SPREAD[8] = int[8](
   -1,          // Empty
   -1,          // Block
   SPREAD_LOW,  // Sand
-  SPREAD_HIGH,  // Water
+  SPREAD_HIGH, // Water
   SPREAD_NONE, // Ice
   SPREAD_FULL, // Steam
   SPREAD_FULL  // Fire

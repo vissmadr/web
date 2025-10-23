@@ -1,70 +1,81 @@
+import { Vector2 } from "@utilities/data-structures";
 import { Config } from "./config";
 
-export class Input {
-  private spawnKey: Config.SpawnKeys = Config.SpawnKeys.NONE;
-  private pointerCoordinates: Vector2 = Vector2.zero();
-  private isPointerDown: boolean = false;
+export namespace Input {
+  const pointerCoordinates: Vector2 = Vector2.Create.zero();
 
-  getSpawnKey() {
-    return this.spawnKey;
+  let isPointerDown: boolean = false;
+  let spawnKey: Config.SpawnKeys = Config.SpawnKeys.NONE;
+
+  export function getSpawnKey() {
+    return spawnKey;
   }
 
-  getPointerCoordinates() {
-    return this.pointerCoordinates;
-  }
-  getIsPointerDown() {
-    return this.isPointerDown;
+  export function getPointerCoordinates() {
+    return pointerCoordinates;
   }
 
-  private setupPointer(canvas: HTMLCanvasElement) {
+  export function getIsPointerDown() {
+    return isPointerDown;
+  }
+
+  export function setup(canvas: HTMLCanvasElement) {
+    setupPointer(canvas);
+    setupKeyboard();
+  }
+
+  export function setOnDebug(callback: () => void) {
+    window.addEventListener("keydown", (ev: KeyboardEvent) => {
+      if (ev.key.toLowerCase() === "d") callback();
+    });
+  }
+
+  function setupPointer(canvas: HTMLCanvasElement) {
     canvas.addEventListener("pointermove", (ev: PointerEvent) => {
       const canvasBounds = canvas.getBoundingClientRect();
       const x = ev.clientX - canvasBounds.left;
       const y = ev.clientY - canvasBounds.top;
 
-      this.pointerCoordinates.set(
-        x / canvas.width,
-        (canvas.height - y) / canvas.height,
-      );
+      pointerCoordinates.set(x / canvas.width, (canvas.height - y) / canvas.height);
     });
 
     window.addEventListener("pointerdown", () => {
-      this.isPointerDown = true;
+      isPointerDown = true;
     });
     window.addEventListener("pointerup", () => {
-      this.isPointerDown = false;
+      isPointerDown = false;
     });
     window.addEventListener("blur", () => {
-      this.isPointerDown = false;
+      isPointerDown = false;
     });
   }
 
-  private setupKeyboard() {
+  function setupKeyboard() {
     window.addEventListener("keydown", (ev: KeyboardEvent) => {
       switch (ev.key.toLowerCase()) {
         case "0":
-          this.spawnKey = Config.SpawnKeys.NUM_0;
+          spawnKey = Config.SpawnKeys.NUM_0;
           break;
         case "1":
-          this.spawnKey = Config.SpawnKeys.NUM_1;
+          spawnKey = Config.SpawnKeys.NUM_1;
           break;
         case "2":
-          this.spawnKey = Config.SpawnKeys.NUM_2;
+          spawnKey = Config.SpawnKeys.NUM_2;
           break;
         case "3":
-          this.spawnKey = Config.SpawnKeys.NUM_3;
+          spawnKey = Config.SpawnKeys.NUM_3;
           break;
         case "4":
-          this.spawnKey = Config.SpawnKeys.NUM_4;
+          spawnKey = Config.SpawnKeys.NUM_4;
           break;
         case "5":
-          this.spawnKey = Config.SpawnKeys.NUM_5;
+          spawnKey = Config.SpawnKeys.NUM_5;
           break;
         case "6":
-          this.spawnKey = Config.SpawnKeys.NUM_6;
+          spawnKey = Config.SpawnKeys.NUM_6;
           break;
         case "7":
-          this.spawnKey = Config.SpawnKeys.NUM_7;
+          spawnKey = Config.SpawnKeys.NUM_7;
           break;
         case "r":
           window.location.reload();
@@ -84,22 +95,11 @@ export class Input {
         case "5":
         case "6":
         case "7":
-          this.spawnKey = Config.SpawnKeys.NONE;
+          spawnKey = Config.SpawnKeys.NONE;
           break;
         default:
           break;
       }
-    });
-  }
-
-  setup(canvas: HTMLCanvasElement) {
-    this.setupPointer(canvas);
-    this.setupKeyboard();
-  }
-
-  setOnDebug(callback: () => void) {
-    window.addEventListener("keydown", (ev: KeyboardEvent) => {
-      if (ev.key.toLowerCase() === "d") callback();
     });
   }
 }

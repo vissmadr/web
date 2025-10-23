@@ -173,6 +173,9 @@ importers:
 
   packages/sandfall:
     dependencies:
+      '@utilities/data-structures':
+        specifier: workspace:*
+        version: link:../../utilities/data-structures
       '@utilities/random':
         specifier: workspace:*
         version: link:../../utilities/random

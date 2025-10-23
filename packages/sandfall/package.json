@@ -9,7 +9,8 @@
   },
   "dependencies": {
     "@utilities/webgl": "workspace:*",
-    "@utilities/random": "workspace:*"
+    "@utilities/random": "workspace:*",
+    "@utilities/data-structures": "workspace:*"
   },
   "devDependencies": {
     "typescript": "latest"

@@ -5,4 +5,4 @@ const canvasID = "mainCanvas";
 const canvas = document.getElementById(canvasID) as HTMLCanvasElement;
 if (!canvas) throw `Cannot get #${canvasID}`;
 
-Creative.WebGL.Dissolve.main(canvas);
+Sandfall.main(canvas);
