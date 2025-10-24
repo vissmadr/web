@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@packages/creative": "workspace:*",
+    "@packages/sandtext": "workspace:*",
     "@packages/test": "workspace:*"
   },
   "devDependencies": {

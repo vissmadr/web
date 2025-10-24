@@ -20,6 +20,9 @@ importers:
       '@packages/creative':
         specifier: workspace:*
         version: link:../../packages/creative
+      '@packages/sandtext':
+        specifier: workspace:*
+        version: link:../../packages/sandtext
       '@packages/test':
         specifier: workspace:*
         version: link:../../packages/test
@@ -49,20 +52,20 @@ importers:
         specifier: workspace:*
         version: link:../../utilities/text-shuffle
       solid-js:
-        specifier: ^1.9.7
+        specifier: ^1.9.9
         version: 1.9.9
     devDependencies:
       typescript:
         specifier: latest
         version: 5.9.3
       vite:
-        specifier: ^6.3.5
+        specifier: ^6.4.1
         version: 6.4.1
       vite-plugin-glsl:
-        specifier: ^1.4.2
+        specifier: ^1.5.4
         version: 1.5.4(esbuild@0.25.11)(vite@6.4.1)
       vite-plugin-solid:
-        specifier: ^2.11.6
+        specifier: ^2.11.10
         version: 2.11.10(solid-js@1.9.9)(vite@6.4.1)
 
   packages/creative:
@@ -97,6 +100,43 @@ importers:
       '@utilities/shapes':
         specifier: workspace:*
         version: link:../../utilities/shapes
+      '@utilities/webgl':
+        specifier: workspace:*
+        version: link:../../utilities/webgl
+    devDependencies:
+      typescript:
+        specifier: latest
+        version: 5.9.3
+
+  packages/sandtext:
+    dependencies:
+      '@utilities/canvas2d':
+        specifier: workspace:*
+        version: link:../../utilities/canvas2d
+      '@utilities/collision':
+        specifier: workspace:*
+        version: link:../../utilities/collision
+      '@utilities/colors':
+        specifier: workspace:*
+        version: link:../../utilities/colors
+      '@utilities/common':
+        specifier: workspace:*
+        version: link:../../utilities/common
+      '@utilities/data-structures':
+        specifier: workspace:*
+        version: link:../../utilities/data-structures
+      '@utilities/mathematics':
+        specifier: workspace:*
+        version: link:../../utilities/mathematics
+      '@utilities/noise':
+        specifier: workspace:*
+        version: link:../../utilities/noise
+      '@utilities/noise-glsl':
+        specifier: workspace:*
+        version: link:../../utilities/noise-glsl
+      '@utilities/random':
+        specifier: workspace:*
+        version: link:../../utilities/random
       '@utilities/webgl':
         specifier: workspace:*
         version: link:../../utilities/webgl
