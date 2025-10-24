@@ -1,5 +1,5 @@
+import { Contact } from "./contact/Contact";
 import { Creative } from "./creative/Creative";
-import { Data } from "../../data";
 import { TechStack } from "./TechStack";
 
 export const Home = () => {
@@ -17,16 +17,7 @@ export const Home = () => {
       </div>
 
       <div class="contact">
-        <h1>Contact</h1>
-        <div>
-          <a href={Data.contact.email}>Email</a>
-        </div>
-        <div>
-          <a href={Data.contact.github}>GitHub</a>
-        </div>
-        <div>
-          <a href={Data.contact.twitter}>X</a>
-        </div>
+        <Contact />
       </div>
 
       <div class="creative">
