@@ -4,8 +4,8 @@ import vertexShader from "./vertex.glsl";
 import fragmentShader from "./fragment.glsl";
 
 const defaultConfig = {
-  width: 800,
-  height: 800,
+  width: 600,
+  height: 600,
 
   cells: 3,
   noiseOctaves: 10,

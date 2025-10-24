@@ -8,8 +8,8 @@ export const defaultConfig = {
   },
 
   returnSpeed: {
-    min: 0.004,
-    max: 0.012,
+    min: 0.010,
+    max: 0.036,
   },
 
   repelRadius: 0.06,

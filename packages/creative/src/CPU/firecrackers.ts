@@ -4,15 +4,15 @@ import { Random } from "@utilities/random";
 import { Noise } from "@utilities/noise";
 
 const defaultConfig = {
-  width: 800,
-  height: 800,
+  width: 600,
+  height: 600,
 
   iterations: 6,
   orbsPooled: 1000,
 
   radius: {
-    min: 5,
-    max: 9,
+    min: 4,
+    max: 7,
   },
   decayRate: 0.095,
 

@@ -51,10 +51,7 @@ export namespace Node {
     const randomPosition = Vector2.Create.zero();
 
     for (let i = 0; i < Config.nodes.spawn.count; i++) {
-      randomPosition.set(
-        Random.range(0, Config.width),
-        Random.range(0, Config.height),
-      );
+      randomPosition.set(Random.range(0, Config.width), Random.range(0, Config.height));
 
       nodes.push(new Node(i, randomPosition));
     }
@@ -65,10 +62,7 @@ export namespace Node {
     for (const node of nodes) {
       if (Random.chance(1 - Config.nodes.connect.chance)) continue;
 
-      const connectionsCount = Random.rangeInt(
-        Config.nodes.connect.count.min,
-        Config.nodes.connect.count.max,
-      );
+      const connectionsCount = Random.rangeInt(Config.nodes.connect.count.min, Config.nodes.connect.count.max);
 
       for (let c = 0; c < connectionsCount; c++) {
         const randomNode = nodes[Random.rangeInt(0, nodes.length - 1)];

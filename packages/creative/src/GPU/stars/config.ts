@@ -1,13 +1,13 @@
 export const defaultConfig = {
-  width: 800,
-  height: 800,
+  width: 600,
+  height: 600,
 
-  particles: 3200,
+  particles: 1200,
 
-  minSize: 0.3,
+  minSize: 0.4,
   maxSize: 2.3,
-  minSpeed: 0.00005,
-  maxSpeed: 0.00015,
+  minSpeed: 0.00004,
+  maxSpeed: 0.00012,
 };
 
 export type Config = typeof defaultConfig;

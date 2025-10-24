@@ -5,8 +5,8 @@ import vertexShader from "./vertex.glsl";
 import fragmentShader from "./fragment.glsl";
 
 const defaultConfig = {
-  canvasWidth: 800,
-  canvasHeight: 800,
+  canvasWidth: 600,
+  canvasHeight: 600,
 
   timeIncrement: 0.1,
 };

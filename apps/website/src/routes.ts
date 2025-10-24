@@ -19,9 +19,13 @@ export namespace Routes {
 
   export const arts = {
     theSeer: "/the-seer",
+    sandfall: "/sandfall",
     systemShock: "/system-shock",
+    connections: "/connections",
+    pathfinder: "/pathfinder",
     gameOfLife: "/game-of-life",
     anger: "/anger",
+    water: "/water",
     wealth: "/concealed",
     firecrackers: "/sparks",
     overgrowth: "/overgrowth",
@@ -37,6 +41,7 @@ export namespace Routes {
     noiseRainbow: "/noise-rainbow",
     regeneration: "/regeneration",
     trigonometry: "/trigonometry",
+    quadtreeSimulation: "/quadtree-simulation",
     tenThousand: "/ten-thousand",
     layers: "/layers",
     blockCellularSand: "/block-cellular-sand",

@@ -9,13 +9,13 @@ import renderFragment from "./render-fragment.glsl";
 import img from "./tenthousand.png";
 
 const defaultConfig = {
-  canvasWidth: 800,
-  canvasHeight: 800,
+  canvasWidth: 600,
+  canvasHeight: 600,
   particlesCount: 10_000,
   brightness: 3,
-  speed: 0.0002,
+  speed: 0.0001,
   minSize: 1.5,
-  sizeScalar: 3.0,
+  sizeScalar: 2.0,
 };
 
 type Config = typeof defaultConfig;

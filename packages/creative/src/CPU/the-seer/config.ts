@@ -1,12 +1,12 @@
 export const defaultConfig = {
-  width: 960,
-  height: 1200,
+  width: 480,
+  height: 600,
 
   imageWidth: 480,
   imageHeight: 600,
 
   cachedParticles: 500,
-  lifetime: 300,
+  lifetime: 220,
   decay: 2.2,
   size: 0.006,
   speed: 1,

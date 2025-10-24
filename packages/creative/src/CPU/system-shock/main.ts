@@ -4,8 +4,8 @@ import { Noise } from "@utilities/noise";
 import systemShockPNG from "./system-shock.png";
 
 const defaultConfig = {
-  width: 780,
-  height: 648,
+  width: 600,
+  height: 600,
 
   imageWidth: 86,
   imageHeight: 72,

@@ -3,14 +3,14 @@ import { Canvas2D } from "@utilities/canvas2d";
 import { Noise } from "@utilities/noise";
 
 const defaultConfig = {
-  width: 800,
-  height: 800,
+  width: 600,
+  height: 600,
 
   iterations: 1,
   orbsPooled: 1000,
 
-  radius: 6,
-  decayRate: 0.01,
+  radius: 4,
+  decayRate: 0.02,
 
   noiseFrequency: 0.0045,
   velocityScalar: 1.0,

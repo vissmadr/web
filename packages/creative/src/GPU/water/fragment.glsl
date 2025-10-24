@@ -1,5 +1,3 @@
-// WIP
-
 uniform float u_time;
 uniform float u_resolution;
 
@@ -12,18 +10,18 @@ const vec2 seed3 = vec2(42.46281);
 const vec3 COLOR1 = vec3(0.1, 0.5, 0.5);
 const vec3 COLOR2 = vec3(0.4, 0.8, 1.0);
 
-const vec2 stretch = vec2(1.0, 3.6);
+const vec2 stretch = vec2(1.0, 2.8);
 
 const float rippleSpeed = 0.03;
 const float rippleFrequency = 8.0;
 
-const float speed1      = 0.007;
+const float speed1      = 0.004;
 const float frequency1  = 1.4;
-const int   octaves1    = 4;
+const int   octaves1    = 3;
 
-const float speed2      = 0.01;
-const float frequency2  = 2.4;
-const int   octaves2    = 4;
+const float speed2      = 0.008;
+const float frequency2  = 2.2;
+const int   octaves2    = 6;
 
 void main() {
   vec3 color = vec3(0.0);

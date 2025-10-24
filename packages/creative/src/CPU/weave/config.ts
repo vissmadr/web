@@ -1,6 +1,6 @@
 export const defaultConfig = {
-  canvasSize: 700,
-  gridSize: 350,
+  canvasSize: 600,
+  gridSize: 300,
 
   pins: 400,
   pinGap: 20,
