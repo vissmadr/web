@@ -1,3 +1,4 @@
+import { Creative } from "../../creative/Creative";
 import { Data } from "../../data";
 
 export const Home = () => {
@@ -21,6 +22,7 @@ export const Home = () => {
       </div>
 
       <div class="creative">
+        <Creative />
       </div>
     </div>
   );

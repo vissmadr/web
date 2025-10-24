@@ -1,22 +1,22 @@
 import { Creative } from "@packages/creative";
 import { TagNames } from "./creative-tags";
 
-import theSeerPNG from "./thumbnails/theSeer.png";
+import theSeerPNG from "./thumbnails/the-seer.png";
 import layersPNG from "./thumbnails/layers.png";
-import noise2DPNG from "./thumbnails/noise2D.png";
-import randomWalkersPNG from "./thumbnails/randomWalkers.png";
-import noiseLoopPNG from "./thumbnails/noiseLoop.png";
-import noiseAsciiPNG from "./thumbnails/noiseAscii.png";
-import tenThousandPNG from "./thumbnails/tenThousand.png";
+import noise2DPNG from "./thumbnails/noise-2d.png";
+import randomWalkersPNG from "./thumbnails/random-walkers.png";
+import noiseLoopPNG from "./thumbnails/noise-loop.png";
+import noiseAsciiPNG from "./thumbnails/noise-ascii.png";
+import tenThousandPNG from "./thumbnails/ten-thousand.png";
 import overgrowthPNG from "./thumbnails/overgrowth.png";
 import firecrackersPNG from "./thumbnails/firecrackers.png";
-import systemShockPNG from "./thumbnails/systemShock.png";
+import systemShockPNG from "./thumbnails/system-shock.png";
 import regenerationPNG from "./thumbnails/regeneration.png";
 import trigonometryPNG from "./thumbnails/trigonometry.png";
 import angerPNG from "./thumbnails/anger.png";
 import wealthPNG from "./thumbnails/wealth.png";
 import starsPNG from "./thumbnails/stars.png";
-import gameOfLifePNG from "./thumbnails/gameOfLife.png";
+import gameOfLifePNG from "./thumbnails/game-of-life.png";
 import weavePNG from "./thumbnails/weave.png";
 import sandfallPNG from "./thumbnails/sandfall.png";
 import connectionsPNG from "./thumbnails/connections.png";
@@ -45,12 +45,7 @@ const configs = {
     route: "the-seer",
     main: Creative.CPU.TheSeer.main,
     thumbnail: theSeerPNG,
-    tags: [
-      TagNames.Input,
-      TagNames.Particles,
-      TagNames.Image,
-      TagNames.Noise,
-    ],
+    tags: [TagNames.Input, TagNames.Particles, TagNames.Image, TagNames.Noise],
     description: "",
   }),
 
@@ -59,12 +54,7 @@ const configs = {
     route: "wealth",
     main: Creative.GPU.Wealth.main,
     thumbnail: wealthPNG,
-    tags: [
-      TagNames.Input,
-      TagNames.GPU,
-      TagNames.Particles,
-      TagNames.Noise,
-    ],
+    tags: [TagNames.Input, TagNames.GPU, TagNames.Particles, TagNames.Noise],
     description: "",
   }),
 
@@ -91,12 +81,7 @@ const configs = {
     route: "system-shock",
     main: Creative.CPU.SystemShock.main,
     thumbnail: systemShockPNG,
-    tags: [
-      TagNames.ASCII,
-      TagNames.Image,
-      TagNames.Noise,
-      TagNames.Random,
-    ],
+    tags: [TagNames.ASCII, TagNames.Image, TagNames.Noise, TagNames.Random],
     description: "",
   }),
 
@@ -105,12 +90,7 @@ const configs = {
     route: "sandfall",
     main: Creative.GPU.Sandfall.main,
     thumbnail: sandfallPNG,
-    tags: [
-      TagNames.Input,
-      TagNames.GPU,
-      TagNames.Automata,
-      TagNames.Physics,
-    ],
+    tags: [TagNames.Input, TagNames.GPU, TagNames.Automata, TagNames.Physics],
     description: "",
   }),
 
@@ -245,7 +225,7 @@ const configs = {
     route: "noise-2d",
     main: Creative.GPU.Noise2D.main,
     thumbnail: noise2DPNG,
-    tags: [TagNames.GPU, TagNames.Noise],
+    tags: [TagNames.GPU, TagNames.Noise, TagNames.Education],
     description: "",
   }),
 
