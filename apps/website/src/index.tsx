@@ -5,8 +5,8 @@ import { For } from "solid-js";
 
 import { Home } from "./pages/home/Home";
 import { NotFound } from "./pages/not-found/NotFound";
-import { CreativePage } from "./creative/CreativePage";
-import { creatives } from "./creative/creative-data";
+import { CreativePage } from "./pages/home/creative/CreativePage";
+import { creatives } from "./pages/home/creative/creative-data";
 
 import "./styles/reset.css";
 import "./styles/style.css";
