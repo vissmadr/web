@@ -1,20 +1,20 @@
 import { For } from "solid-js";
-import { ArtCard } from "./ArtCard";
-import { artData } from "./art-data";
+import { CreativeCard } from "./CreativeCard";
+import { creatives } from "./creative-data";
 
-import css from "./Arts.module.css";
+import css from "./Creative.module.css";
 
-export const Arts = () => {
+export const Creative = () => {
   return (
     <div class="page">
-      <h1>Arts</h1>
+      <h1>Creative</h1>
 
-      <p>Creative coding arts.</p>
+      <p>Creative things</p>
 
       <div class={css.cards_container}>
-        <For each={artData}>
+        <For each={creatives}>
           {(art) => (
-            <ArtCard
+            <CreativeCard
               title={art.title}
               route={art.route}
               thumbnail={art.thumbnail}

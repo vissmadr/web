@@ -1,9 +1,9 @@
 import { For } from "solid-js";
-import { ArtTagFields, ArtTagNames, artTags } from "./art-tags";
+import { type TagData, type TagNames, creativeTags } from "./creative-tags";
 
 import css from "./TagsContainer.module.css";
 
-const Tag = (props: ArtTagFields) => {
+const Tag = (props: TagData) => {
   return (
     <div
       class={css.tag}
@@ -14,22 +14,20 @@ const Tag = (props: ArtTagFields) => {
   );
 };
 
-export const TagsContainer = (props: { tags: ArtTagNames[] }) => {
+export const TagsContainer = (props: { tags: TagNames[] }) => {
   return (
     <div class={css.wrapper}>
       <div class={css.tags_container}>
         <For each={props.tags}>
           {(tagName) => {
-            const tag = artTags[tagName];
-            if (tag) {
-              return (
-                <Tag
-                  color={tag.color}
-                  fontColor={tag.fontColor}
-                  label={tag.label}
-                />
-              );
-            }
+            const tag = creativeTags[tagName];
+            return (
+              <Tag
+                color={tag.color}
+                fontColor={tag.fontColor}
+                label={tag.label}
+              />
+            );
           }}
         </For>
       </div>

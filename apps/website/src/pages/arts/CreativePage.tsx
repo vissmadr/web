@@ -1,22 +1,22 @@
 import { onMount, Show } from "solid-js";
-import { ArtData } from "./art-data";
+import { type CreativeData } from "./creative-data";
 import { TagsContainer } from "./TagsContainer";
 
-import css from "./ArtPage.module.css";
+import css from "./CreativePage.module.css";
 
 // Additional stuff, like implementation guide and whatnot should be
 // added as Components to the ArtPage props.
 
-interface ArtPageProps {
-  art: ArtData<any>;
+interface Props {
+  creative: CreativeData<any>;
 }
 
-export const ArtPage = (props: ArtPageProps) => {
+export const CreativePage = (props: Props) => {
   let canvasRef: HTMLCanvasElement | undefined;
 
   onMount(() => {
     if (!canvasRef) throw "Invalid canvasRef";
-    props.art.artMain(canvasRef, props.art.artConfig);
+    props.creative.main(canvasRef, props.creative.config);
   });
 
   // TODO: onCleanup
@@ -24,17 +24,17 @@ export const ArtPage = (props: ArtPageProps) => {
   return (
     <main class={css.main}>
       <article>
-        <h1 class={css.title}>{props.art.title}</h1>
+        <h1 class={css.title}>{props.creative.title}</h1>
 
         <div class={css.tags}>
-          <TagsContainer tags={props.art.tags} />
+          <TagsContainer tags={props.creative.tags} />
         </div>
 
         <figure>
           <canvas class={css.canvas} ref={canvasRef} />
-          <Show when={props.art.description}>
+          <Show when={props.creative.description}>
             <figcaption class={css.description}>
-              {props.art.description}
+              {props.creative.description}
             </figcaption>
           </Show>
         </figure>

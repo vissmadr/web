@@ -1,22 +1,21 @@
 import { A } from "@solidjs/router";
 
-import { Routes } from "../../routes";
 import { TagsContainer } from "./TagsContainer";
-import { ArtTagNames } from "./art-tags";
+import { TagNames } from "./creative-tags";
 
-import css from "./ArtCard.module.css";
+import css from "./CreativeCard.module.css";
 
-interface ArtCardProps {
+interface Props {
   title: string;
   route: string;
   thumbnail: string;
-  tags: ArtTagNames[];
+  tags: TagNames[];
 }
 
-export const ArtCard = (props: ArtCardProps) => {
+export const CreativeCard = (props: Props) => {
   return (
     <div class={css.card}>
-      <A class={css.link} href={Routes.root.arts + props.route}>
+      <A class={css.link} href={props.route}>
         <div class={css.image_container}>
           <img class={css.image} src={props.thumbnail} />
         </div>

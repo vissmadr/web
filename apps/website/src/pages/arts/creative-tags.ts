@@ -1,4 +1,4 @@
-export enum ArtTagNames {
+export enum TagNames {
   "3D",
   Input,
   GPU,
@@ -15,92 +15,92 @@ export enum ArtTagNames {
   Physics
 }
 
-export type ArtTagFields = {
+export type TagData = {
   label: string;
   color: string;
   fontColor: string;
 };
 
-export const artTags: Record<ArtTagNames, ArtTagFields> = {
-  [ArtTagNames["3D"]]: {
+export const creativeTags: Record<TagNames, TagData> = {
+  [TagNames["3D"]]: {
     label: "3D",
     color: "#118888",
     fontColor: "#FFFFFF",
   },
 
-  [ArtTagNames.Input]: {
+  [TagNames.Input]: {
     label: "Input",
     color: "#11A011",
     fontColor: "#FFFFFF",
   },
 
-  [ArtTagNames.GPU]: {
+  [TagNames.GPU]: {
     label: "GPU",
     color: "#DD1111",
     fontColor: "#FFFFFF",
   },
 
-  [ArtTagNames.Noise]: {
+  [TagNames.Noise]: {
     label: "Noise",
     color: "#A08070",
     fontColor: "#FFFFFF",
   },
 
-  [ArtTagNames.Education]: {
+  [TagNames.Education]: {
     label: "Education",
     color: "#127FDE",
     fontColor: "#FFFFFF",
   },
 
-  [ArtTagNames.Particles]: {
+  [TagNames.Particles]: {
     label: "Particles",
     color: "#FF8010",
     fontColor: "#FFFFFF",
   },
 
-  [ArtTagNames.Image]: {
+  [TagNames.Image]: {
     label: "Image",
     color: "#D56065",
     fontColor: "#FFFFFF",
   },
 
-  [ArtTagNames.Pathfinding]: {
+  [TagNames.Pathfinding]: {
     label: "Pathfinding",
     color: "#2040B1",
     fontColor: "#FFFFFF",
   },
 
-  [ArtTagNames.Collision]: {
+  [TagNames.Collision]: {
     label: "Collision",
     color: "#9163F2",
     fontColor: "#FFFFFF",
   },
 
-  [ArtTagNames.Random]: {
+  [TagNames.Random]: {
     label: "Random",
     color: "#6E915F",
     fontColor: "#FFFFFF",
   },
 
-  [ArtTagNames.ASCII]: {
+  [TagNames.ASCII]: {
     label: "ASCII",
     color: "#666666",
     fontColor: "#FFFFFF",
   },
 
-  [ArtTagNames.Automata]: {
+  [TagNames.Automata]: {
     label: "Automata",
     color: "#AA11AA",
     fontColor: "#FFFFFF",
   },
 
-  [ArtTagNames.Bright]: {
+  [TagNames.Bright]: {
     label: "Bright",
     color: "#DDDDDD",
     fontColor: "#111111",
   },
 
-  [ArtTagNames.Physics]: {
+  [TagNames.Physics]: {
     label: "Physics",
     color: "#49C280",
     fontColor: "#FFFFFF",
