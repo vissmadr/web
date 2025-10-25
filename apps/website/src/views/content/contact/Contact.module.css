@@ -14,4 +14,10 @@
   max-width: 30px;
   height: 30px;
   max-height: 30px;
+
+  filter: saturate(0) contrast(0);
+}
+
+.box:hover {
+  filter: unset;
 }

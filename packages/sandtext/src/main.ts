@@ -27,8 +27,6 @@ function setupGL() {
   }
 
   resize(config.imageWidth, config.imageHeight);
-
-  return gl;
 }
 
 export function resize(width: number, height: number) {
@@ -89,7 +87,6 @@ function setupState(computeProgram: WebGLProgram, renderProgram: WebGLProgram) {
     },
     render: {
       u_size: gl.getUniformLocation(renderProgram, "u_size"),
-      u_resolution: gl.getUniformLocation(renderProgram, "u_resolution"),
     },
   } as const;
 
@@ -225,7 +222,6 @@ function setupState(computeProgram: WebGLProgram, renderProgram: WebGLProgram) {
 }
 
 export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) {
-  // return false;
   config = { ...defaultConfig, ...settings };
 
   mainCanvas = canvas;
@@ -278,8 +274,6 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) 
   const renderLoop = () => {
     gl.useProgram(programs.render);
     gl.bindVertexArray(swapOne.renderVAO);
-
-    gl.uniform2f(uniforms.render.u_resolution, mainCanvas.width, mainCanvas.height);
 
     gl.drawArrays(gl.POINTS, 0, particleCount);
   };

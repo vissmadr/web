@@ -12,12 +12,12 @@ export const Hero = () => {
 
   const [isCanvasLoaded, setIsCanvasLoaded] = createSignal(false);
 
-  function resize() {
+  const resize = () => {
     if (!canvasRef || !isCanvasLoaded()) return;
-    if(!containerRef) return;
+    if (!containerRef) return;
     const rect = containerRef.getBoundingClientRect();
     Sandtext.resize(rect.width, rect.height);
-  }
+  };
 
   onMount(() => {
     setIsCanvasLoaded(Sandtext.main(canvasRef!));
