@@ -9,8 +9,8 @@ export const Footer = () => {
         target="_blank"
         rel="noopener noreferrer"
       >
-        <code class={css.code}>handcrafted</code>
-        <code class={css.code}>v1.0</code>
+        <span class={css.info}>handcrafted</span>
+        <span class={css.info}>v1.0</span>
       </a>
     </footer>
   );

@@ -12,7 +12,7 @@ export enum TagNames {
   Automata,
   Bright,
   Education,
-  Physics
+  Physics,
 }
 
 export type TagData = {

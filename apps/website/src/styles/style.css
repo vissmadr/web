@@ -1,6 +1,5 @@
 body {
   background-color: #242424;
-  /* color: #dfdfdf; */
   color: #999999;
 
   font-family: "Noto Sans Runic", Arial, Helvetica, sans-serif;
@@ -8,9 +7,5 @@ body {
 
   justify-content: center;
   align-items: center;
-  text-align: center;
-}
-
-.page {
   text-align: center;
 }

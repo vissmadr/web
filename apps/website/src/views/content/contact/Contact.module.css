@@ -19,6 +19,10 @@
   height: 30px;
   max-height: 30px;
 
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
   filter: saturate(0) contrast(0);
 }
 

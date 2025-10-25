@@ -34,7 +34,7 @@ export interface CreativeData<T> {
   description?: string;
 }
 
-// NOTE: This enables the LSP to find the correct config type
+// INFO: This enables the LSP to find the correct config type
 function setupConfig<T>(config: CreativeData<T>): CreativeData<T> {
   return config;
 }
@@ -250,13 +250,13 @@ export const creatives: CreativeData<any>[] = [
   configs.layers,
   configs.anger,
   configs.water,
-  configs.sandfall,
+  configs.systemShock,
   configs.randomWalkers,
   configs.stars,
-  configs.weave,
+  configs.sandfall,
   configs.tenThousand,
   configs.regeneration,
-  configs.systemShock,
+  configs.weave,
   configs.trigonometry,
   configs.quadtreeSimulation,
   configs.noiseLoop,

@@ -31,7 +31,7 @@ export const Hero = () => {
   });
 
   return (
-    <div class={css.hero}>
+    <header class={css.hero}>
       <div class={css.container} ref={containerRef}>
         <A href="/">
           <canvas class={css.canvas} ref={canvasRef} />
@@ -41,6 +41,6 @@ export const Hero = () => {
           </Show>
         </A>
       </div>
-    </div>
+    </header>
   );
 };

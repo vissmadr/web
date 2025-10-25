@@ -62,26 +62,36 @@ const links: Link[] = [
   } as const,
 ] as const;
 
-// TODO: div?
 export const Contact = () => {
   return (
-    <div> 
-      <div class={css.container}>
-        <div class={css.box}>
+    <section aria-label="Contact">
+      <ul class={css.container}>
+        <li class={css.box}>
           <a href={`mailto:${email.url}`}>
-            <img src={email.icon} alt={email.name} title={email.title} />
+            <img
+              src={email.icon}
+              alt={email.name}
+              title={email.title}
+              aria-label={`Email ${email.title}`}
+            />
           </a>
-        </div>
+        </li>
+
         <For each={links}>
           {(link) => (
-            <div class={css.box}>
-              <a href={link.url} target="_blank" rel="noopener noreferrer">
+            <li class={css.box}>
+              <a
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={link.title}
+              >
                 <img src={link.icon} alt={link.name} title={link.title} />
               </a>
-            </div>
+            </li>
           )}
         </For>
-      </div>
-    </div>
+      </ul>
+    </section>
   );
 };

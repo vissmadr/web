@@ -2,10 +2,10 @@ import css from "./About.module.css";
 
 export const About = () => {
   return (
-    <div>
-      <p class={css.description}>
+    <section>
+      <p class={css.description} aria-label="About">
         Self-taught software engineer, game developer, and knower of things.
       </p>
-    </div>
+    </section>
   );
 };
