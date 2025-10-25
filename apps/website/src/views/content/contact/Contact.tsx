@@ -62,9 +62,10 @@ const links: Link[] = [
   } as const,
 ] as const;
 
+// TODO: div?
 export const Contact = () => {
   return (
-    <div>
+    <div> 
       <div class={css.container}>
         <div class={css.box}>
           <a href={`mailto:${email.url}`}>
