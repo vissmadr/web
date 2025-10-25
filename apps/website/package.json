@@ -1,5 +1,7 @@
 {
   "name": "website",
+  "version": "1.0.0",
+  "author": "vissmadr",
   "private": true,
   "type": "module",
   "scripts": {

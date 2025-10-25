@@ -1,4 +1,27 @@
 .footer {
-  min-height: 30px;
-  background-color: #222222;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 4px;
+  padding: 4px;
+  color: #525252;
+}
+
+.link:hover {
+  color: #ffbb11;
+}
+
+.code {
+  font-size: 16px;
+  line-height: 1;
+  max-height: 100%;
+  overflow: hidden;
 }
