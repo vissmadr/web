@@ -23,7 +23,7 @@ export const Hero = () => {
         </Show>
       </div>
 
-      <p>Hero text.</p>
+      <p>Self-taught sorcerer, software engineer, and game developer.</p>
     </div>
   );
 };

@@ -4,10 +4,10 @@ import css from "./Contact.module.css";
 import discordSVG from "./assets/discord.svg";
 import githubSVG from "./assets/github.svg";
 import itchSVG from "./assets/itch.svg";
-import protonmailSVG from "./assets/protonmail.svg";
 import redditSVG from "./assets/reddit.svg";
 import steamSVG from "./assets/steam.svg";
-import xSVG from "./assets/x.svg";
+import protonmailSVG from "./assets/protonmail.svg"
+import twitterSVG from "./assets/twitter.svg"
 
 type Link = {
   name: string;
@@ -28,7 +28,7 @@ const links: Link[] = [
   },
   {
     name: "x",
-    icon: xSVG,
+    icon: twitterSVG,
     url: "https://x.com/vissmadr",
   },
   {
@@ -36,13 +36,27 @@ const links: Link[] = [
     icon: itchSVG,
     url: "https://vissmadr.itch.io/",
   },
+    // TODO
+  {
+    name: "steam",
+    icon: steamSVG,
+    url: "",
+  },
+  {
+    name: "discord",
+    icon: discordSVG,
+    url: "",
+  },
+  {
+    name: "reddit",
+    icon: redditSVG,
+    url: "",
+  },
 ] as const;
 
 export const Contact = () => {
   return (
     <div>
-      <h1>Contact</h1>
-
       <div class={css.container}>
         <For each={links}>
           {(link) => (

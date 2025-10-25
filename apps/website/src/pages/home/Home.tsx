@@ -10,13 +10,9 @@ export const Home = () => {
         <Hero />
       </div>
 
-      {/* <div class="about"> */}
-      {/*   <About /> */}
-      {/* </div> */}
-      {/**/}
-      {/* <div class="contact"> */}
-      {/*   <Contact /> */}
-      {/* </div> */}
+      <div class="contact">
+        <Contact />
+      </div>
 
       <div class="creative">
         <Creative />

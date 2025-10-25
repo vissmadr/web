@@ -4,9 +4,6 @@ import { TagsContainer } from "./TagsContainer";
 
 import css from "./CreativePage.module.css";
 
-// Additional stuff, like implementation guide and whatnot should be
-// added as Components to the ArtPage props.
-
 interface Props {
   creative: CreativeData<any>;
 }
