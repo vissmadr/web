@@ -16,8 +16,6 @@ export const CreativePage = (props: Props) => {
     props.creative.main(canvasRef, props.creative.config);
   });
 
-  // TODO: onCleanup
-
   return (
     <main class={css.main}>
       <article>

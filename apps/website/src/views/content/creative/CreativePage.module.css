@@ -5,11 +5,12 @@
   justify-content: center;
   text-align: center;
 
-  padding: 10px 0;
+  padding: 8px 0;
 }
 
 .title {
-  margin: 10px auto;
+  margin: 8px auto;
+  font-size: 26px;
 }
 
 .tags {
@@ -17,14 +18,14 @@
 }
 
 .canvas {
-  margin: 10px auto;
+  margin: 8px auto;
+  border: 2px solid #444444;
 
-  border-radius: 10px;
-  /* border-radius: 50%; */
+  border-radius: 8px;
 }
 
 .description {
-  margin: 10px auto;
+  margin: 8px auto;
   max-width: 600px;
   text-align: center;
 }

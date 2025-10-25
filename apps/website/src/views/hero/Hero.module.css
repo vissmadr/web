@@ -7,9 +7,9 @@
   margin: auto;
 
   width: 100%;
-  max-width: 480px;
+  max-width: 420px;
   min-width: 320px;
-  aspect-ratio: 480 / 141;
+  aspect-ratio: 420 / 123;
 }
 
 .canvas,

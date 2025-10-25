@@ -1,6 +1,6 @@
 export const defaultConfig = {
-  imageWidth: 480,
-  imageHeight: 141,
+  imageWidth: 420,
+  imageHeight: 123,
 
   FPS: 30,
 

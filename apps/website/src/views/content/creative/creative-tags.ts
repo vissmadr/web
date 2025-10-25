@@ -25,73 +25,73 @@ export const creativeTags: Record<TagNames, TagData> = {
   [TagNames["3D"]]: {
     label: "3D",
     color: "#118888",
-    fontColor: "#FFFFFF",
+    fontColor: "#EEEEEE",
   },
 
   [TagNames.Input]: {
     label: "Input",
     color: "#11A011",
-    fontColor: "#FFFFFF",
+    fontColor: "#EEEEEE",
   },
 
   [TagNames.GPU]: {
     label: "GPU",
     color: "#DD1111",
-    fontColor: "#FFFFFF",
+    fontColor: "#EEEEEE",
   },
 
   [TagNames.Noise]: {
     label: "Noise",
     color: "#A08070",
-    fontColor: "#FFFFFF",
+    fontColor: "#EEEEEE",
   },
 
   [TagNames.Education]: {
     label: "Education",
     color: "#127FDE",
-    fontColor: "#FFFFFF",
+    fontColor: "#EEEEEE",
   },
 
   [TagNames.Particles]: {
     label: "Particles",
     color: "#FF8010",
-    fontColor: "#FFFFFF",
+    fontColor: "#EEEEEE",
   },
 
   [TagNames.Image]: {
     label: "Image",
     color: "#D56065",
-    fontColor: "#FFFFFF",
+    fontColor: "#EEEEEE",
   },
 
   [TagNames.Pathfinding]: {
     label: "Pathfinding",
     color: "#2040B1",
-    fontColor: "#FFFFFF",
+    fontColor: "#EEEEEE",
   },
 
   [TagNames.Collision]: {
     label: "Collision",
     color: "#9163F2",
-    fontColor: "#FFFFFF",
+    fontColor: "#EEEEEE",
   },
 
   [TagNames.Random]: {
     label: "Random",
     color: "#6E915F",
-    fontColor: "#FFFFFF",
+    fontColor: "#EEEEEE",
   },
 
   [TagNames.ASCII]: {
     label: "ASCII",
     color: "#666666",
-    fontColor: "#FFFFFF",
+    fontColor: "#EEEEEE",
   },
 
   [TagNames.Automata]: {
     label: "Automata",
     color: "#AA11AA",
-    fontColor: "#FFFFFF",
+    fontColor: "#EEEEEE",
   },
 
   [TagNames.Bright]: {
@@ -103,6 +103,6 @@ export const creativeTags: Record<TagNames, TagData> = {
   [TagNames.Physics]: {
     label: "Physics",
     color: "#49C280",
-    fontColor: "#FFFFFF",
+    fontColor: "#EEEEEE",
   },
 };

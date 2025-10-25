@@ -26,7 +26,7 @@ function setupGL(canvas: HTMLCanvasElement) {
 
   WebGL.Canvas.resizeToDisplaySize(canvas);
   gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
-  gl.clearColor(0.08, 0.08, 0.08, 1.0);
+  gl.clearColor(0.11, 0.11, 0.11, 1.0);
 
   return gl;
 }
@@ -420,6 +420,8 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) 
   const renderLoop = () => {
     gl.useProgram(programs.render);
     gl.bindVertexArray(swapOne.renderVAO);
+
+    gl.clear(gl.COLOR_BUFFER_BIT);
 
     gl.drawArrays(gl.POINTS, 0, particleCount);
   };
