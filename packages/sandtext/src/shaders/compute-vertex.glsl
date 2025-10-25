@@ -33,9 +33,10 @@ void main() {
   vec2 velocity = ZERO;
 
   float noise = getNoise(a_position * u_noiseFrequency + u_time + a_random) * 2.0 - 1.0;
+  noise *= mix(u_noiseScalar.r, u_noiseScalar.g, noise);
 
   velocity += getReturnVelocity();
-  velocity += noise * mix(u_noiseScalar.r, u_noiseScalar.g, noise);
+  velocity += noise;
 
   tf_position = a_position + velocity;
 }

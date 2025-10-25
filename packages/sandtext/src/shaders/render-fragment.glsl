@@ -2,6 +2,7 @@
 precision highp float;
 
 in float passRandom;
+in float inputDistanceSquared;
 
 out vec4 outColor;
 
@@ -12,9 +13,9 @@ const vec4 COLOR4 = vec4(1.0, 0.7, 0.0, 1.0);
 const vec4 COLOR5 = vec4(1.0, 0.9, 0.0, 1.0);
 
 void main() {
-  if      (passRandom < 0.2)  outColor = COLOR1;
-  else if (passRandom < 0.4)  outColor = COLOR2;
-  else if (passRandom < 0.6)  outColor = COLOR3;
-  else if (passRandom < 0.8)  outColor = COLOR4;
-  else                        outColor = COLOR5;
+  if      (passRandom < 0.30)  outColor = COLOR1;
+  else if (passRandom < 0.45)  outColor = COLOR2;
+  else if (passRandom < 0.70)  outColor = COLOR3;
+  else if (passRandom < 0.85)  outColor = COLOR4;
+  else                         outColor = COLOR5;
 }

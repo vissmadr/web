@@ -1,12 +1,10 @@
 export const defaultConfig = {
   imageWidth: 480,
   imageHeight: 141,
-  // imageWidth: 539,
-  // imageHeight: 158,
 
   FPS: 30,
 
-  timeIncrement: 0.01,
+  timeIncrement: 0.007,
 
   particleSize: {
     min: 0.5,
@@ -14,13 +12,13 @@ export const defaultConfig = {
   },
 
   returnSpeed: {
-    min: 0.1,
-    max: 0.34,
+    min: 0.16,
+    max: 0.32,
   },
 
   noiseFrequency: 8,
   noiseScalar: {
-    min: 0.001,
+    min: 0.0005,
     max: 0.005,
   },
 } as const;

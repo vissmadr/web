@@ -86,7 +86,7 @@ function createTextOrigins() {
   const auxContext = auxCanvas.getContext("2d");
   if (!auxContext) throw "Cannot get aux 2d context!";
 
-  auxContext.font = `${config.textSize}px sans-serif`;
+  auxContext.font = `bold ${config.textSize}px Arial`;
   auxContext.textAlign = "center";
   auxContext.textRendering = "optimizeLegibility";
 

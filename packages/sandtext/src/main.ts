@@ -1,4 +1,5 @@
 import { NoiseGLSL } from "@utilities/noise-glsl";
+import { Vector2 } from "@utilities/data-structures";
 import { WebGL } from "@utilities/webgl";
 
 import { Config, defaultConfig } from "./config";
