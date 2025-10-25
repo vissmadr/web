@@ -8,9 +8,9 @@ import computeFragment from "./shaders/compute-fragment.glsl";
 import renderVertex from "./shaders/render-vertex.glsl";
 import renderFragment from "./shaders/render-fragment.glsl";
 
-import { rawParticleOrigins } from "./raw";
+import { particleOrigins } from "./raw";
 
-const particleCount = Math.floor(rawParticleOrigins.length / 2);
+const particleCount = Math.floor(particleOrigins.length / 2);
 
 let config: Config;
 let mainCanvas: HTMLCanvasElement;
@@ -110,13 +110,13 @@ function setupState(computeProgram: WebGLProgram, renderProgram: WebGLProgram) {
   } as const;
 
   gl.bindBuffer(gl.ARRAY_BUFFER, buffers.positionHeads);
-  gl.bufferData(gl.ARRAY_BUFFER, rawParticleOrigins, gl.DYNAMIC_DRAW);
+  gl.bufferData(gl.ARRAY_BUFFER, particleOrigins, gl.DYNAMIC_DRAW);
 
   gl.bindBuffer(gl.ARRAY_BUFFER, buffers.positionTails);
-  gl.bufferData(gl.ARRAY_BUFFER, rawParticleOrigins, gl.DYNAMIC_DRAW);
+  gl.bufferData(gl.ARRAY_BUFFER, particleOrigins, gl.DYNAMIC_DRAW);
 
   gl.bindBuffer(gl.ARRAY_BUFFER, buffers.textOrigins);
-  gl.bufferData(gl.ARRAY_BUFFER, rawParticleOrigins, gl.STATIC_DRAW);
+  gl.bufferData(gl.ARRAY_BUFFER, particleOrigins, gl.STATIC_DRAW);
 
   gl.bindBuffer(gl.ARRAY_BUFFER, buffers.random);
   gl.bufferData(gl.ARRAY_BUFFER, random, gl.STATIC_DRAW);

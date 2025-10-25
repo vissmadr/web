@@ -1,6 +1,5 @@
 .hero {
   width: 100%;
-  /* border: 1px solid #000; */
 }
 
 .container {
@@ -8,14 +7,13 @@
   margin: auto;
 
   width: 100%;
-  max-width: 536px;
+  max-width: 480px;
   min-width: 320px;
-  aspect-ratio: 536 / 146;
+  aspect-ratio: 480 / 141;
 }
 
 .canvas,
 .backupimage {
-  border: 1px solid #000;
   position: absolute;
   top: 0;
   left: 0;
