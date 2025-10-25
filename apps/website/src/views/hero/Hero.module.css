@@ -1,0 +1,23 @@
+.hero {
+  border: 1px solid #f00;
+  width: 100%;
+}
+
+.container {
+  position: relative;
+  margin: auto;
+
+  width: 100%;
+  max-width: 536px;
+  min-width: 320px;
+  aspect-ratio: 536 / 146;
+
+  border: 1px solid #fa0;
+}
+
+.canvas,
+.backupimage {
+  position: absolute;
+  inset: 0;
+  /* object-fit: cover; */
+}

@@ -4,7 +4,7 @@ export const defaultConfig = {
 
   FPS: 30,
 
-  timeIncrement: 0.003,
+  timeIncrement: 0.01,
 
   particleSize: {
     min: 0.5,
@@ -16,10 +16,10 @@ export const defaultConfig = {
     max: 0.34,
   },
 
-  noiseFrequency: 10,
+  noiseFrequency: 8,
   noiseScalar: {
-    min: 0.0018,
-    max: 0.0030,
+    min: 0.001,
+    max: 0.005,
   },
 } as const;
 

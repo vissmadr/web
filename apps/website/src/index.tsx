@@ -1,25 +1,38 @@
 /* @refresh reload */
 import { render } from "solid-js/web";
 import { Route, Router } from "@solidjs/router";
-import { For } from "solid-js";
+import { For, type ParentProps } from "solid-js";
 
-import { Home } from "./pages/home/Home";
-import { NotFound } from "./pages/not-found/NotFound";
-import { CreativePage } from "./pages/home/creative/CreativePage";
-import { creatives } from "./pages/home/creative/creative-data";
+import { Content } from "./views/content/Content";
+import { NotFound } from "./views/content/not-found/NotFound";
+import { CreativePage } from "./views/content/creative/CreativePage";
+import { creatives } from "./views/content/creative/creative-data";
 
 import "./styles/reset.css";
 import "./styles/style.css";
+import { Hero } from "./views/hero/Hero";
+import { Footer } from "./views/footer/Footer";
 
 const root = document.getElementById("root");
 if (!root) throw "Invalid #root HTML element!";
 
+const Layout = (props: ParentProps) => (
+  <div>
+    <Hero />
+    <main>{props.children}</main>
+    <Footer />
+  </div>
+);
+
 const App = () => (
-  <Router>
-    <Route path="/" component={Home} />
+  <Router root={Layout}>
+    <Route path="/" component={Content} />
     <For each={creatives}>
-      {(art) => (
-        <Route path={art.route} component={() => <CreativePage creative={art} />} />
+      {(creative) => (
+        <Route
+          path={creative.route}
+          component={() => <CreativePage creative={creative} />}
+        />
       )}
     </For>
     <Route path="*404" component={NotFound} />

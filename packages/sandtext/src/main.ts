@@ -13,28 +13,34 @@ import { rawParticleOrigins } from "./raw";
 const particleCount = Math.floor(rawParticleOrigins.length / 2);
 
 let config: Config;
+let mainCanvas: HTMLCanvasElement;
+let gl: WebGL2RenderingContext;
 
-function setupGL(canvas: HTMLCanvasElement) {
-  let gl: WebGL2RenderingContext | null;
+function setupGL() {
   try {
-    gl = canvas.getContext("webgl2");
-    if (!gl) throw "Failed getting webgl2 context";
+    const tryGL = mainCanvas.getContext("webgl2");
+    if (!tryGL) throw "Failed getting webgl2 context";
+    gl = tryGL;
   } catch (error) {
     console.error("Failed getting webgl2 context");
     return null;
   }
 
-  canvas.width = config.imageWidth;
-  canvas.height = config.imageHeight;
-
-  WebGL.Canvas.resizeToDisplaySize(canvas);
-  gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
-  gl.clearColor(0.0, 0.0, 0.0, 1.0);
+  resize(config.imageWidth, config.imageHeight);
 
   return gl;
 }
 
-function setupPrograms(gl: WebGL2RenderingContext) {
+export function resize(width: number, height: number) {
+  mainCanvas.width = width;
+  mainCanvas.height = height;
+
+  WebGL.Canvas.resizeToDisplaySize(mainCanvas);
+  gl.viewport(0, 0, width, height);
+  gl.clearColor(0.0, 0.0, 0.0, 1.0);
+}
+
+function setupPrograms() {
   const fullComputeVS = WebGL.GLSL.getBegin() + NoiseGLSL.Simplex.default + computeVertex;
   const computeVS = WebGL.Setup.compileShader(gl, "vertex", fullComputeVS);
   const computeFS = WebGL.Setup.compileShader(gl, "fragment", computeFragment);
@@ -71,7 +77,7 @@ function generateRNG() {
   return new Float32Array(random);
 }
 
-function setupState(gl: WebGL2RenderingContext, computeProgram: WebGLProgram, renderProgram: WebGLProgram) {
+function setupState(computeProgram: WebGLProgram, renderProgram: WebGLProgram) {
   const random = generateRNG();
 
   const uniforms = {
@@ -83,6 +89,7 @@ function setupState(gl: WebGL2RenderingContext, computeProgram: WebGLProgram, re
     },
     render: {
       u_size: gl.getUniformLocation(renderProgram, "u_size"),
+      u_resolution: gl.getUniformLocation(renderProgram, "u_resolution"),
     },
   } as const;
 
@@ -218,14 +225,18 @@ function setupState(gl: WebGL2RenderingContext, computeProgram: WebGLProgram, re
 }
 
 export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) {
+  // return false;
   config = { ...defaultConfig, ...settings };
 
-  const gl = setupGL(canvas);
+  mainCanvas = canvas;
+  if (!mainCanvas) return false;
+
+  setupGL();
   if (!gl) return false;
 
-  const programs = setupPrograms(gl);
+  const programs = setupPrograms();
 
-  const { uniforms, vertexArrayObjects, transformFeedbacks } = setupState(gl, programs.compute, programs.render);
+  const { uniforms, vertexArrayObjects, transformFeedbacks } = setupState(programs.compute, programs.render);
 
   let swapOne = {
     computeVAO: vertexArrayObjects.compute.heads,
@@ -267,6 +278,8 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) 
   const renderLoop = () => {
     gl.useProgram(programs.render);
     gl.bindVertexArray(swapOne.renderVAO);
+
+    gl.uniform2f(uniforms.render.u_resolution, mainCanvas.width, mainCanvas.height);
 
     gl.drawArrays(gl.POINTS, 0, particleCount);
   };
