@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@packages/creative": "workspace:*",
+    "@packages/sandtext": "workspace:*",
     "@solidjs/router": "^0.15.3",
     "@utilities/text-shuffle": "workspace:*",
     "solid-js": "^1.9.9"

@@ -10,24 +10,26 @@ import renderFragment from "./shaders/render-fragment.glsl";
 
 import { rawParticleOrigins } from "./raw";
 
-import vissmadrPNG from "./vissmadr.png";
-
-const image = new Image();
-
 const particleCount = Math.floor(rawParticleOrigins.length / 2);
 
 let config: Config;
 
 function setupGL(canvas: HTMLCanvasElement) {
-  const gl = canvas.getContext("webgl2");
-  if (!gl) throw new Error("Failed to get WebGL2 context");
+  let gl: WebGL2RenderingContext | null;
+  try {
+    gl = canvas.getContext("webgl2");
+    if (!gl) throw "Failed getting webgl2 context";
+  } catch (error) {
+    console.error("Failed getting webgl2 context");
+    return null;
+  }
 
-  canvas.width = image.width;
-  canvas.height = image.height;
+  canvas.width = config.imageWidth;
+  canvas.height = config.imageHeight;
 
   WebGL.Canvas.resizeToDisplaySize(canvas);
   gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
-  gl.clearColor(0.08, 0.08, 0.08, 1.0);
+  gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
   return gl;
 }
@@ -49,53 +51,6 @@ function setupPrograms(gl: WebGL2RenderingContext) {
   const renderProgram = WebGL.Setup.linkProgram(gl, renderVS, renderFS);
 
   return { compute: computeProgram, render: renderProgram } as const;
-}
-
-// NOTE: The particle origins array can be stored as raw
-// data file. Use this function to generate such a file
-function createParticleOrigins(image: HTMLImageElement) {
-  const auxCanvas = document.createElement("canvas");
-  auxCanvas.width = image.width;
-  auxCanvas.height = image.height;
-
-  const auxContext = auxCanvas.getContext("2d");
-  if (!auxContext) throw "Cannot get aux 2d context!";
-
-  auxContext.fillStyle = "#000000";
-  auxContext.fillRect(0, 0, auxCanvas.width, auxCanvas.height);
-
-  auxContext.drawImage(image, 0, 0, auxCanvas.width, auxCanvas.height);
-  const imageData = auxContext.getImageData(0, 0, auxCanvas.width, auxCanvas.height).data;
-
-  auxContext.clearRect(0, 0, auxCanvas.width, auxCanvas.height);
-
-  const xParticleOrigins: number[] = [];
-  const yParticleOrigins: number[] = [];
-  for (let i = 0; i < imageData.length; i += 4) {
-    const r = imageData[i + 0];
-    const g = imageData[i + 1];
-    const b = imageData[i + 2];
-
-    const index = i / 4;
-    const x = index % auxCanvas.width;
-    const y = Math.floor(index / auxCanvas.width);
-
-    if (r + g + b > 80) {
-      xParticleOrigins.push(x);
-      yParticleOrigins.push(y);
-    }
-  }
-
-  const particleCount = xParticleOrigins.length;
-
-  const particleOrigins: number[] = [];
-  for (let i = 0; i < particleCount; i++) {
-    particleOrigins.push(xParticleOrigins[i] / image.width);
-    particleOrigins.push(1 - yParticleOrigins[i] / image.height);
-  }
-
-  const output = particleOrigins.map((v) => Number(v.toFixed(4)));
-  console.log("export const textorigins = new Float32Array(" + JSON.stringify(output) + ");");
 }
 
 function generateRNG() {
@@ -262,10 +217,11 @@ function setupState(gl: WebGL2RenderingContext, computeProgram: WebGLProgram, re
   return { uniforms, vertexArrayObjects, transformFeedbacks } as const;
 }
 
-function start(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) {
+export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) {
   config = { ...defaultConfig, ...settings };
 
   const gl = setupGL(canvas);
+  if (!gl) return false;
 
   const programs = setupPrograms(gl);
 
@@ -340,11 +296,53 @@ function start(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) {
   };
 
   requestAnimationFrame(loop);
+
+  return true;
 }
 
-export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) {
-  image.src = vissmadrPNG;
-  image.onload = () => {
-    start(canvas, settings);
-  };
-}
+// // NOTE: The particle origins array can be stored as raw
+// // data file. Use this function to generate such a file
+// function createParticleOrigins(image: HTMLImageElement) {
+//   const auxCanvas = document.createElement("canvas");
+//   auxCanvas.width = image.width;
+//   auxCanvas.height = image.height;
+//
+//   const auxContext = auxCanvas.getContext("2d");
+//   if (!auxContext) throw "Cannot get aux 2d context!";
+//
+//   auxContext.fillStyle = "#000000";
+//   auxContext.fillRect(0, 0, auxCanvas.width, auxCanvas.height);
+//
+//   auxContext.drawImage(image, 0, 0, auxCanvas.width, auxCanvas.height);
+//   const imageData = auxContext.getImageData(0, 0, auxCanvas.width, auxCanvas.height).data;
+//
+//   auxContext.clearRect(0, 0, auxCanvas.width, auxCanvas.height);
+//
+//   const xParticleOrigins: number[] = [];
+//   const yParticleOrigins: number[] = [];
+//   for (let i = 0; i < imageData.length; i += 4) {
+//     const r = imageData[i + 0];
+//     const g = imageData[i + 1];
+//     const b = imageData[i + 2];
+//
+//     const index = i / 4;
+//     const x = index % auxCanvas.width;
+//     const y = Math.floor(index / auxCanvas.width);
+//
+//     if (r + g + b > 80) {
+//       xParticleOrigins.push(x);
+//       yParticleOrigins.push(y);
+//     }
+//   }
+//
+//   const particleCount = xParticleOrigins.length;
+//
+//   const particleOrigins: number[] = [];
+//   for (let i = 0; i < particleCount; i++) {
+//     particleOrigins.push(xParticleOrigins[i] / image.width);
+//     particleOrigins.push(1 - yParticleOrigins[i] / image.height);
+//   }
+//
+//   const output = particleOrigins.map((v) => Number(v.toFixed(4)));
+//   console.log("export const textorigins = new Float32Array(" + JSON.stringify(output) + ");");
+// }

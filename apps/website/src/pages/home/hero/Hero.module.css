@@ -1,0 +1,15 @@
+.title {
+  position: relative;
+  width: 536px;
+  height: 146px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+}
+
+.title canvas,
+.title img {
+  position: absolute;
+  margin: auto;
+}
