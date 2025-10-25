@@ -20,6 +20,9 @@ importers:
       '@packages/creative':
         specifier: workspace:*
         version: link:../../packages/creative
+      '@packages/particle-origins':
+        specifier: workspace:*
+        version: link:../../packages/particle-origins
       '@packages/sandtext':
         specifier: workspace:*
         version: link:../../packages/sandtext
@@ -106,6 +109,12 @@ importers:
       '@utilities/webgl':
         specifier: workspace:*
         version: link:../../utilities/webgl
+    devDependencies:
+      typescript:
+        specifier: latest
+        version: 5.9.3
+
+  packages/particle-origins:
     devDependencies:
       typescript:
         specifier: latest

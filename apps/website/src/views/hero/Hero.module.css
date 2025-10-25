@@ -1,5 +1,6 @@
 .hero {
   width: 100%;
+  /* border: 1px solid #000; */
 }
 
 .container {
@@ -14,6 +15,7 @@
 
 .canvas,
 .backupimage {
+  border: 1px solid #000;
   position: absolute;
   top: 0;
   left: 0;

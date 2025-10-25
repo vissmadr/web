@@ -12,6 +12,7 @@
   "dependencies": {
     "@packages/creative": "workspace:*",
     "@packages/sandtext": "workspace:*",
+    "@packages/particle-origins": "workspace:*",
     "@packages/test": "workspace:*"
   },
   "devDependencies": {

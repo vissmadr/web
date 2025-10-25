@@ -1,0 +1,17 @@
+{
+  "name": "@packages/particle-origins",
+  "type": "module",
+  "private": true,
+  "exports": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "check": "tsc --noEmit"
+  },
+  "prettier": {
+    "printWidth": 120
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "latest"
+  }
+}
