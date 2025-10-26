@@ -54,7 +54,13 @@ const configs = {
     route: "wealth",
     main: Creative.GPU.Wealth.main,
     thumbnail: wealthPNG,
-    tags: [TagNames.Input, TagNames.GPU, TagNames.Particles, TagNames.Noise],
+    tags: [
+      TagNames.Input,
+      TagNames.GPU,
+      TagNames.Particles,
+      TagNames.Noise,
+      TagNames.Physics,
+    ],
     description: "",
   }),
 
@@ -72,7 +78,7 @@ const configs = {
     route: "pathfinder",
     main: Creative.CPU.Pathfinder.main,
     thumbnail: pathfinderPNG,
-    tags: [TagNames.Pathfinding, TagNames.Noise],
+    tags: [TagNames.Pathfinding, TagNames.Noise, TagNames.Random],
     description: "",
   }),
 
@@ -90,7 +96,13 @@ const configs = {
     route: "sandfall",
     main: Creative.GPU.Sandfall.main,
     thumbnail: sandfallPNG,
-    tags: [TagNames.Input, TagNames.GPU, TagNames.Automata, TagNames.Physics],
+    tags: [
+      TagNames.Input,
+      TagNames.GPU,
+      TagNames.Automata,
+      TagNames.Random,
+      TagNames.Physics,
+    ],
     description: "",
   }),
 
@@ -189,7 +201,7 @@ const configs = {
     route: "regeneration",
     main: Creative.GPU.Regeneration.main,
     thumbnail: regenerationPNG,
-    tags: [TagNames.Input, TagNames.GPU, TagNames.Particles],
+    tags: [TagNames.Input, TagNames.GPU, TagNames.Particles, TagNames.Physics],
     description: "",
   }),
 
@@ -207,7 +219,7 @@ const configs = {
     route: "quadtree-simulation",
     main: Creative.CPU.QuadtreeSimulation.main,
     thumbnail: quadtreeSimulationPNG,
-    tags: [TagNames.Education],
+    tags: [TagNames.Education, TagNames.Particles],
     description: "",
   }),
 

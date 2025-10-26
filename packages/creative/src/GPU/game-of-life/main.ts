@@ -8,14 +8,14 @@ const defaultConfig = {
   width: 600,
   height: 600,
 
-  rows: 128,
-  cols: 128,
+  rows: 160,
+  cols: 160,
 
   wrap: true,
 
   spawnChance: 0.1,
 
-  skipFrames: 5,
+  skipFrames: 1,
 
   lifetimeUp: 0.10,
   lifetimeDown: 0.01,

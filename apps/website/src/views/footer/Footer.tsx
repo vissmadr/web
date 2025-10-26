@@ -10,7 +10,7 @@ export const Footer = () => {
         rel="noopener noreferrer"
       >
         <span class={css.info}>handcrafted</span>
-        <span class={css.info}>v1.04</span>
+        <span class={css.info}>v1.05</span>
       </a>
     </footer>
   );

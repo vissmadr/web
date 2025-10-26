@@ -19,11 +19,6 @@ export const CreativePage = (props: Props) => {
   return (
     <main class={css.main}>
       <article>
-        <h1 class={css.title}>{props.creative.title}</h1>
-
-        <div class={css.tags}>
-          <TagsContainer tags={props.creative.tags} />
-        </div>
 
         <figure class={css.canvascontainer}>
           <canvas class={css.canvas} ref={canvasRef} />
@@ -33,6 +28,10 @@ export const CreativePage = (props: Props) => {
             </figcaption>
           </Show>
         </figure>
+
+        <div class={css.tags}>
+          <TagsContainer tags={props.creative.tags} />
+        </div>
       </article>
     </main>
   );
