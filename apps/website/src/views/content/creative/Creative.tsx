@@ -9,12 +9,12 @@ export const Creative = () => {
     <section aria-label="Creative">
       <div class={css.cards_container}>
         <For each={creatives}>
-          {(art) => (
+          {(creative) => (
             <CreativeCard
-              title={art.title}
-              route={art.route}
-              thumbnail={art.thumbnail}
-              tags={art.tags}
+              title={creative.title}
+              route={creative.route}
+              thumbnail={creative.thumbnail}
+              tags={creative.tags}
             />
           )}
         </For>
