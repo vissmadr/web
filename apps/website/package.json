@@ -14,7 +14,8 @@
     "@packages/sandtext": "workspace:*",
     "@solidjs/router": "^0.15.3",
     "@utilities/text-shuffle": "workspace:*",
-    "solid-js": "^1.9.9"
+    "solid-js": "^1.9.9",
+    "vite-plugin-singlefile": "^2.3.0"
   },
   "devDependencies": {
     "typescript": "latest",

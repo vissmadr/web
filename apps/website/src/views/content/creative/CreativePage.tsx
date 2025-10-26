@@ -25,7 +25,7 @@ export const CreativePage = (props: Props) => {
           <TagsContainer tags={props.creative.tags} />
         </div>
 
-        <figure>
+        <figure class={css.canvascontainer}>
           <canvas class={css.canvas} ref={canvasRef} />
           <Show when={props.creative.description}>
             <figcaption class={css.description}>

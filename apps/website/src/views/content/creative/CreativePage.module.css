@@ -17,9 +17,16 @@
   opacity: 80%;
 }
 
+.canvascontainer {
+  width: 100%;
+  padding: 8px;
+}
+
 .canvas {
   margin: 8px auto;
   border: 2px solid #444444;
+
+  width: inherit;
 
   border-radius: 8px;
 }

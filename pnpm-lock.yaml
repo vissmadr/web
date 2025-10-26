@@ -60,6 +60,9 @@ importers:
       solid-js:
         specifier: ^1.9.9
         version: 1.9.9
+      vite-plugin-singlefile:
+        specifier: ^2.3.0
+        version: 2.3.0(rollup@4.52.5)(vite@6.4.1)
     devDependencies:
       typescript:
         specifier: latest
