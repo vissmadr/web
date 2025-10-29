@@ -9,6 +9,7 @@ export * as Firecrackers from "./firecrackers";
 export * as Trigonometry from "./trigonometry";
 export * as SystemShock from "./system-shock/main";
 export * as Connections from "./connections/main";
+export * as InvokerOrbs from "./invoker-orbs";
 export * as Pathfinder from "./pathfinder/main";
 export * as NoiseAscii from "./noise-ascii";
 export * as Overgrowth from "./overgrowth";
