@@ -23,6 +23,9 @@ importers:
       '@packages/particle-origins':
         specifier: workspace:*
         version: link:../../packages/particle-origins
+      '@packages/prototype':
+        specifier: workspace:*
+        version: link:../../packages/prototype
       '@packages/sandtext':
         specifier: workspace:*
         version: link:../../packages/sandtext
@@ -118,6 +121,37 @@ importers:
         version: 5.9.3
 
   packages/particle-origins:
+    devDependencies:
+      typescript:
+        specifier: latest
+        version: 5.9.3
+
+  packages/prototype:
+    dependencies:
+      '@utilities/canvas2d':
+        specifier: workspace:*
+        version: link:../../utilities/canvas2d
+      '@utilities/collision':
+        specifier: workspace:*
+        version: link:../../utilities/collision
+      '@utilities/colors':
+        specifier: workspace:*
+        version: link:../../utilities/colors
+      '@utilities/data-structures':
+        specifier: workspace:*
+        version: link:../../utilities/data-structures
+      '@utilities/mathematics':
+        specifier: workspace:*
+        version: link:../../utilities/mathematics
+      '@utilities/noise':
+        specifier: workspace:*
+        version: link:../../utilities/noise
+      '@utilities/random':
+        specifier: workspace:*
+        version: link:../../utilities/random
+      '@utilities/webgl':
+        specifier: workspace:*
+        version: link:../../utilities/webgl
     devDependencies:
       typescript:
         specifier: latest
