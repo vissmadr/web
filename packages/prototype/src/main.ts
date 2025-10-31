@@ -1,12 +1,16 @@
-import { Vector2 } from "@utilities/data-structures";
-import { Mathematics } from "@utilities/mathematics";
-
 const config = {
-  canvasWidth: 600,
-  canvasHeight: 600,
+  screenWidth: 600,
+  screenHeight: 600,
+
+  enemiesCount: 2_000,
 } as const;
 
 let context: CanvasRenderingContext2D;
+
+type Vector2 = {
+  x: number;
+  y: number;
+};
 
 enum Input {
   Up = "w",
@@ -15,11 +19,8 @@ enum Input {
   Right = "d",
 }
 
-const currentInput = {
-  [Input.Up]: false,
-  [Input.Left]: false,
-  [Input.Down]: false,
-  [Input.Right]: false,
+type Camera = {
+  position: Vector2;
 };
 
 type Character = {
@@ -29,11 +30,28 @@ type Character = {
   size: number;
 };
 
+const currentInput = {
+  [Input.Up]: false,
+  [Input.Left]: false,
+  [Input.Down]: false,
+  [Input.Right]: false,
+};
+
+const camera: Camera = {
+  position: {
+    x: 0,
+    y: 0,
+  },
+};
+
 const player: Character = {
-  position: Vector2.Create.zero(),
-  speed: 5,
-  color: "#109910",
-  size: 10,
+  position: {
+    x: 0,
+    y: 0,
+  },
+  speed: 6,
+  color: "#10AA10",
+  size: 15,
 };
 
 function setupInput() {
@@ -64,19 +82,59 @@ function setupInput() {
   });
 }
 
-function moveCharacter(character: Character) {
+function createEnemies() {
+  const enemies: Character[] = [];
+
+  for (let i = 0; i < config.enemiesCount; i++) {
+    const newEnemy: Character = {
+      position: {
+        x: -1000 + Math.random() * 2000,
+        y: -1000 + Math.random() * 2000,
+      },
+      speed: 1,
+      size: 5 + Math.random() * 10,
+      color: `rgb(${100 + Math.random() * 155}, 10, 10)`,
+    };
+
+    enemies.push(newEnemy);
+  }
+
+  return enemies;
+}
+
+function moveCharacterByInput(character: Character) {
   const isHorizontalMovement = currentInput[Input.Left] || currentInput[Input.Right];
   const isVerticalMovement = currentInput[Input.Up] || currentInput[Input.Down];
 
   if (!isHorizontalMovement && !isVerticalMovement) return;
 
   let speed = character.speed;
-  if (isHorizontalMovement && isVerticalMovement) speed *= Mathematics.SIN_45;
+  if (isHorizontalMovement && isVerticalMovement) speed *= Math.SQRT1_2;
 
   if (currentInput[Input.Up]) character.position.y -= speed;
   if (currentInput[Input.Left]) character.position.x -= speed;
   if (currentInput[Input.Down]) character.position.y += speed;
   if (currentInput[Input.Right]) character.position.x += speed;
+}
+
+function moveCharacterRandomly(character: Character) {
+  const tau = Math.PI * 2;
+  const angle = Math.random() * tau;
+  const randomVelocity: Vector2 = {
+    x: Math.cos(angle) * character.speed,
+    y: Math.sin(angle) * character.speed,
+  };
+
+  character.position.x += randomVelocity.x;
+  character.position.y += randomVelocity.y;
+}
+
+function updateCameraFollow(character: Character) {
+  camera.position.x = character.position.x;
+  camera.position.y = character.position.y;
+
+  camera.position.x -= config.screenWidth * 0.5;
+  camera.position.y -= config.screenHeight * 0.5;
 }
 
 function renderCharacter(character: Character) {
@@ -86,13 +144,16 @@ function renderCharacter(character: Character) {
   const y = character.position.y - halfSize;
   const size = character.size;
 
+  const xCameraDifference = x - camera.position.x;
+  const yCameraDifference = y - camera.position.y;
+
   context.fillStyle = character.color;
-  context.fillRect(x, y, size, size);
+  context.fillRect(xCameraDifference, yCameraDifference, size, size);
 }
 
 function setupContext(canvas: HTMLCanvasElement) {
-  canvas.width = config.canvasWidth;
-  canvas.height = config.canvasHeight;
+  canvas.width = config.screenWidth;
+  canvas.height = config.screenHeight;
 
   const context = canvas.getContext("2d");
   if (!context) throw "Cannot get 2d context";
@@ -102,17 +163,26 @@ function setupContext(canvas: HTMLCanvasElement) {
 
 function renderBackground() {
   context.fillStyle = "#303030";
-  context.fillRect(0, 0, config.canvasWidth, config.canvasHeight);
+  context.fillRect(0, 0, config.screenWidth, config.screenHeight);
 }
 
 export function main(canvas: HTMLCanvasElement) {
   context = setupContext(canvas);
   setupInput();
 
+  const enemies = createEnemies();
+
   const animation = () => {
     renderBackground();
+
+    for (const enemy of enemies) {
+      moveCharacterRandomly(enemy);
+      renderCharacter(enemy);
+    }
+
+    moveCharacterByInput(player);
+    updateCameraFollow(player);
     renderCharacter(player);
-    moveCharacter(player);
 
     requestAnimationFrame(animation);
   };
