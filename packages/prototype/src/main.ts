@@ -30,8 +30,8 @@ type Character = {
 // ----------
 
 const config = {
-  screenWidth: 600,
-  screenHeight: 600,
+  screenWidth: 900,
+  screenHeight: 900,
 
   enemiesCount: 2_000,
 } as const;
@@ -95,6 +95,10 @@ function setupInput() {
     } else if (key === Input.Right) {
       currentInput[Input.Right] = false;
     }
+  });
+
+  window.addEventListener("blur", () => {
+    currentInput[Input.Up] = currentInput[Input.Left] = currentInput[Input.Down] = currentInput[Input.Right] = false;
   });
 }
 
