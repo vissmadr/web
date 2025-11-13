@@ -18,7 +18,6 @@ import wealthPNG from "./assets/wealth.png";
 import starsPNG from "./assets/stars.png";
 import gameOfLifePNG from "./assets/game-of-life.png";
 import weavePNG from "./assets/weave.png";
-import sandfallPNG from "./assets/sandfall.png";
 import connectionsPNG from "./assets/connections.png";
 import pathfinderPNG from "./assets/pathfinder.png";
 import waterPNG from "./assets/water.png";
@@ -88,21 +87,6 @@ const configs = {
     main: Creative.CPU.SystemShock.main,
     thumbnail: systemShockPNG,
     tags: [TagNames.ASCII, TagNames.Image, TagNames.Noise, TagNames.Random],
-    description: "",
-  }),
-
-  sandfall: setupConfig({
-    title: "Sandfall",
-    route: "sandfall",
-    main: Creative.GPU.Sandfall.main,
-    thumbnail: sandfallPNG,
-    tags: [
-      TagNames.Input,
-      TagNames.GPU,
-      TagNames.Automata,
-      TagNames.Random,
-      TagNames.Physics,
-    ],
     description: "",
   }),
 
@@ -265,7 +249,6 @@ export const creatives: CreativeData<any>[] = [
   configs.systemShock,
   configs.randomWalkers,
   configs.stars,
-  configs.sandfall,
   configs.tenThousand,
   configs.regeneration,
   configs.weave,
