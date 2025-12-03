@@ -36,7 +36,7 @@ export namespace Config {
     terrainCost: 0,
   } as const;
 
-  export const animationStepIncrement = 0.03;
+  export const animationStepIncrement = 0.12;
 
   export const colors = {
     debug: "#FF00FF",

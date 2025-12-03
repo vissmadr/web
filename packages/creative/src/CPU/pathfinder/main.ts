@@ -28,13 +28,13 @@ export async function main(canvas: HTMLCanvasElement) {
   // Terrain.randomBlocks(cells);
   Terrain.noiseBlocks(cells);
   Terrain.randomRough(cells);
-  Terrain.unblockAroundCell(start, cells, 3);
-  Terrain.unblockAroundCell(target, cells, 3);
+  Terrain.unblockAroundCell(start, cells, 4);
+  Terrain.unblockAroundCell(target, cells, 4);
 
   Algorithm.initiate(start, target);
 
   if (Config.runtime === Config.Runtime.INSTANT) {
-    while (!Algorithm.hasEnded) {
+    while (!Algorithm.getHasEnded()) {
       Algorithm.iterate();
       renderer.drawCells(cells);
     }

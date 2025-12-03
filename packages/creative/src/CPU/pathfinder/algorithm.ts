@@ -4,10 +4,13 @@ export namespace Algorithm {
   const open = new Set<Cell>();
   const closed = new Set<Cell>();
 
-  export let hasEnded: boolean = false;
-
+  let hasEnded: boolean = false;
   let start: Cell;
   let target: Cell;
+
+  export function getHasEnded() {
+    return hasEnded;
+  }
 
   export function initiate(startCell: Cell, targetCell: Cell) {
     open.clear();
