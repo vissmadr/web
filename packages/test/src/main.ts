@@ -37,8 +37,8 @@ enum CellType {
 type Cell = {
   x: number;
   y: number;
+  distance: number;
   type: CellType;
-  isReached: boolean;
 };
 
 function setupContext(canvas: HTMLCanvasElement) {
@@ -66,8 +66,8 @@ function createCells() {
       const newCell: Cell = {
         x: x,
         y: y,
+        distance: -1,
         type: isBlock ? CellType.Block : CellType.Empty,
-        isReached: false,
       };
       cells[x].push(newCell);
     }
@@ -95,7 +95,7 @@ function drawCells() {
       context.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
 
       context.fillStyle = config.colors.text;
-      const text = cell.isReached ? "R" : "";
+      const text = cell.distance > -1 ? cell.distance.toString() : "";
       context.fillText(text, x * cellSize + 16, y * cellSize + 40);
     }
   }
@@ -116,13 +116,14 @@ function drawBorders() {
 }
 
 function algorithm() {
-  const open = [];
+  const openQueue = [];
   let openPop = 0;
 
-  open.push(cells[5][5]);
+  cells[5][5].distance = 0;
+  openQueue.push(cells[5][5]);
 
-  while (openPop < open.length) {
-    const current: Cell = open[openPop];
+  while (openPop < openQueue.length) {
+    const current: Cell = openQueue[openPop];
     openPop += 1;
 
     for (let i = 0; i < Neighbors.length; i++) {
@@ -139,13 +140,13 @@ function algorithm() {
         continue;
       }
 
-      if (neighbor.isReached) {
+      if (neighbor.distance > -1) {
         continue;
       }
 
-      neighbor.isReached = true;
+      neighbor.distance = current.distance + 1;
 
-      open.push(neighbor);
+      openQueue.push(neighbor);
     }
   }
 }
