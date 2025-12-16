@@ -5,7 +5,7 @@ const config = {
   rows: 11,
   cols: 11,
 
-  blockChance: 0.18,
+  blockChance: 0.22,
 
   colors: {
     empty: "#202020",
@@ -22,11 +22,24 @@ const cellSize = config.width / config.cols;
 
 const cells: Cell[][] = [];
 
-enum Cell {
+const Neighbors = [
+  { x: 1, y: 0 },
+  { x: -1, y: 0 },
+  { x: 0, y: 1 },
+  { x: 0, y: -1 },
+];
+
+enum CellType {
   Empty,
   Block,
-  Player,
 }
+
+type Cell = {
+  x: number;
+  y: number;
+  type: CellType;
+  isReached: boolean;
+};
 
 function setupContext(canvas: HTMLCanvasElement) {
   canvas.width = config.width;
@@ -50,34 +63,47 @@ function createCells() {
     cells.push([]);
     for (let y = 0; y < config.rows; y++) {
       const isBlock = Math.random() < config.blockChance;
-      cells[x].push(isBlock ? Cell.Block : Cell.Empty);
+      const newCell: Cell = {
+        x: x,
+        y: y,
+        type: isBlock ? CellType.Block : CellType.Empty,
+        isReached: false,
+      };
+      cells[x].push(newCell);
     }
   }
 
-  cells[5][5] = Cell.Player;
+  cells[5][5].type = CellType.Empty;
 }
 
 function drawCells() {
   for (let x = 0; x < config.cols; x++) {
     for (let y = 0; y < config.rows; y++) {
-      switch (cells[x][y]) {
-        case Cell.Empty: {
+      const cell = cells[x][y];
+
+      switch (cell.type) {
+        case CellType.Empty: {
           context.fillStyle = config.colors.empty;
           break;
         }
-        case Cell.Block: {
+        case CellType.Block: {
           context.fillStyle = config.colors.block;
-          break;
-        }
-        case Cell.Player: {
-          context.fillStyle = config.colors.player;
           break;
         }
       }
 
       context.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+
+      context.fillStyle = config.colors.text;
+      const text = cell.isReached ? "R" : "";
+      context.fillText(text, x * cellSize + 16, y * cellSize + 40);
     }
   }
+}
+
+function drawBackground() {
+  context.fillStyle = config.colors.empty;
+  context.fillRect(0, 0, config.width, config.height);
 }
 
 function drawBorders() {
@@ -89,17 +115,49 @@ function drawBorders() {
   }
 }
 
+function algorithm() {
+  const open = [];
+  let openPop = 0;
+
+  open.push(cells[5][5]);
+
+  while (openPop < open.length) {
+    const current: Cell = open[openPop];
+    openPop += 1;
+
+    for (let i = 0; i < Neighbors.length; i++) {
+      const nx = current.x + Neighbors[i].x;
+      const ny = current.y + Neighbors[i].y;
+
+      if (nx < 0 || ny < 0 || nx >= config.cols || ny >= config.rows) {
+        continue;
+      }
+
+      const neighbor = cells[nx][ny];
+
+      if (neighbor.type == CellType.Block) {
+        continue;
+      }
+
+      if (neighbor.isReached) {
+        continue;
+      }
+
+      neighbor.isReached = true;
+
+      open.push(neighbor);
+    }
+  }
+}
+
 export function main(canvas: HTMLCanvasElement) {
   context = setupContext(canvas);
 
   createCells();
 
-  context.fillStyle = config.colors.empty;
-  context.fillRect(0, 0, config.width, config.height);
+  algorithm();
 
+  drawBackground();
   drawCells();
   drawBorders();
-
-  context.fillStyle = config.colors.text;
-  context.fillText("0", 16, 36);
 }
