@@ -5,12 +5,14 @@ const config = {
   rows: 11,
   cols: 11,
 
-  blockChance: 0.22,
+  diagonal: false,
+
+  blockChance: 0.24,
 
   colors: {
     empty: "#202020",
     block: "#000000",
-    player: "#AA1010",
+    player: "#108080",
     lines: "#AA6010",
     text: "#AAAAAA",
   },
@@ -22,11 +24,22 @@ const cellSize = config.width / config.cols;
 
 const cells: Cell[][] = [];
 
-const Neighbors = [
-  { x: 1, y: 0 },
-  { x: -1, y: 0 },
-  { x: 0, y: 1 },
-  { x: 0, y: -1 },
+const neighbors4 = [
+  { x: 1, y: 0, cost: 10 },
+  { x: -1, y: 0, cost: 10 },
+  { x: 0, y: 1, cost: 10 },
+  { x: 0, y: -1, cost: 10 },
+];
+
+const neighbors8 = [
+  { x: 1, y: 0, cost: 10 },
+  { x: -1, y: 0, cost: 10 },
+  { x: 0, y: 1, cost: 10 },
+  { x: 0, y: -1, cost: 10 },
+  { x: 1, y: 1, cost: 14 },
+  { x: 1, y: -1, cost: 14 },
+  { x: -1, y: 1, cost: 14 },
+  { x: -1, y: -1, cost: 14 },
 ];
 
 enum CellType {
@@ -51,7 +64,7 @@ function setupContext(canvas: HTMLCanvasElement) {
   context.lineWidth = 0.3;
   context.strokeStyle = config.colors.lines;
 
-  context.font = "36px monospace";
+  context.font = "28px monospace";
 
   return context;
 }
@@ -81,22 +94,20 @@ function drawCells() {
     for (let y = 0; y < config.rows; y++) {
       const cell = cells[x][y];
 
-      switch (cell.type) {
-        case CellType.Empty: {
-          context.fillStyle = config.colors.empty;
-          break;
-        }
-        case CellType.Block: {
-          context.fillStyle = config.colors.block;
-          break;
-        }
+      if (cell.type == CellType.Empty) {
+        context.fillStyle = config.colors.empty;
+      } else {
+        context.fillStyle = config.colors.block;
       }
 
       context.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
 
       context.fillStyle = config.colors.text;
       const text = cell.distance > -1 ? cell.distance.toString() : "";
-      context.fillText(text, x * cellSize + 16, y * cellSize + 40);
+      context.fillText(text, x * cellSize + 10, y * cellSize + 36);
+
+      context.fillStyle = config.colors.player;
+      context.fillRect(5 * cellSize, 5 * cellSize, cellSize, cellSize);
     }
   }
 }
@@ -126,9 +137,10 @@ function algorithm() {
     const current: Cell = openQueue[openPop];
     openPop += 1;
 
-    for (let i = 0; i < Neighbors.length; i++) {
-      const nx = current.x + Neighbors[i].x;
-      const ny = current.y + Neighbors[i].y;
+    const neighbors = config.diagonal ? neighbors8 : neighbors4;
+    for (let i = 0; i < neighbors.length; i++) {
+      const nx = current.x + neighbors8[i].x;
+      const ny = current.y + neighbors8[i].y;
 
       if (nx < 0 || ny < 0 || nx >= config.cols || ny >= config.rows) {
         continue;
@@ -144,7 +156,7 @@ function algorithm() {
         continue;
       }
 
-      neighbor.distance = current.distance + 1;
+      neighbor.distance = current.distance + neighbors[i].cost;
 
       openQueue.push(neighbor);
     }
