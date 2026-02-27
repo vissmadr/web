@@ -60,7 +60,7 @@ function drawQuadtreeBounds(
   context.stroke();
 }
 
-export function main(canvas: HTMLCanvasElement) {
+export function main(canvas: HTMLCanvasElement): () => void {
   function drawParticle(context: CanvasRenderingContext2D, particle: Particle) {
     context.fillRect(
       particle.x,
@@ -99,7 +99,7 @@ export function main(canvas: HTMLCanvasElement) {
     drawQuadtreeBounds(context, quadtree);
   });
 
-  setInterval(() => {
+  const intervalId = setInterval(() => {
     quadtree.reset();
 
     drawBackground(context);
@@ -120,4 +120,8 @@ export function main(canvas: HTMLCanvasElement) {
       drawQuadtreeBounds(context, quadtree);
     });
   }, 1000 / config.FPS);
+
+  return () => {
+    clearInterval(intervalId);
+  };
 }

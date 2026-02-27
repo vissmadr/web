@@ -90,7 +90,7 @@ function createWalkers() {
   return walkers;
 }
 
-export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) {
+export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}): () => void {
   config = { ...defaultConfig, ...settings };
 
   const context = setupContext(canvas);
@@ -100,6 +100,7 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) 
   context.fillStyle = config.backgroundColor;
   context.fillRect(0, 0, config.width, config.height);
 
+  let animationId: number;
   const animation = () => {
     for (const walker of walkers) {
       moveWalker(walker);
@@ -108,8 +109,12 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) 
       context.strokeRect(walker.x, walker.y, config.size, config.size);
     }
 
-    requestAnimationFrame(animation);
+    animationId = requestAnimationFrame(animation);
   };
 
-  animation();
+  animationId = requestAnimationFrame(animation);
+
+  return () => {
+    cancelAnimationFrame(animationId);
+  };
 }

@@ -74,23 +74,35 @@ function setupContext(canvas: HTMLCanvasElement) {
 }
 
 function setupInput(canvas: HTMLCanvasElement) {
-  canvas.addEventListener("pointermove", (event: PointerEvent) => {
+  const onPointerMove = (event: PointerEvent) => {
     const bounds = canvas.getBoundingClientRect();
     input.x = event.clientX - bounds.left;
     input.y = event.clientY - bounds.top;
-  });
+  };
 
-  canvas.addEventListener("pointerdown", () => {
+  const onPointerDown = () => {
     input.clicked = true;
-  });
+  };
 
-  window.addEventListener("pointerup", () => {
+  const onPointerUp = () => {
     input.clicked = false;
-  });
+  };
 
-  window.addEventListener("blur", () => {
+  const onBlur = () => {
     input.clicked = false;
-  });
+  };
+
+  canvas.addEventListener("pointermove", onPointerMove);
+  canvas.addEventListener("pointerdown", onPointerDown);
+  window.addEventListener("pointerup", onPointerUp);
+  window.addEventListener("blur", onBlur);
+
+  return () => {
+    canvas.removeEventListener("pointermove", onPointerMove);
+    canvas.removeEventListener("pointerdown", onPointerDown);
+    window.removeEventListener("pointerup", onPointerUp);
+    window.removeEventListener("blur", onBlur);
+  };
 }
 
 function createOrbsPool() {
@@ -167,10 +179,10 @@ function renderBackground(context: CanvasRenderingContext2D) {
   context.fillRect(0, 0, config.width, config.height);
 }
 
-export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) {
+export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}): () => void {
   config = { ...defaultConfig, ...settings };
 
-  setupInput(canvas);
+  const cleanupInput = setupInput(canvas);
 
   const context = setupContext(canvas);
 
@@ -178,6 +190,7 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) 
 
   let time = 0;
   let orbIndex = 0;
+  let animationId: number;
   const animation = () => {
     time += config.timeIncrement;
 
@@ -199,8 +212,13 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) 
       decayOrb(orb);
     }
 
-    requestAnimationFrame(animation);
+    animationId = requestAnimationFrame(animation);
   };
 
-  animation();
+  animationId = requestAnimationFrame(animation);
+
+  return () => {
+    cancelAnimationFrame(animationId);
+    cleanupInput();
+  };
 }

@@ -119,7 +119,7 @@ function createAllSprites(config: Config) {
   return allSprites;
 }
 
-function start(canvas: HTMLCanvasElement, image: HTMLImageElement, config: Config) {
+function start(canvas: HTMLCanvasElement, image: HTMLImageElement, config: Config, animationState: { id: number }) {
   const context = setupContext(canvas, config);
 
   const imageData = createImageData(context, image, config);
@@ -150,18 +150,24 @@ function start(canvas: HTMLCanvasElement, image: HTMLImageElement, config: Confi
       }
     }
 
-    requestAnimationFrame(animation);
+    animationState.id = requestAnimationFrame(animation);
   };
 
-  requestAnimationFrame(animation);
+  animationState.id = requestAnimationFrame(animation);
 }
 
-export function main(canvas: HTMLCanvasElement, config: Partial<Config> = {}) {
+export function main(canvas: HTMLCanvasElement, config: Partial<Config> = {}): () => void {
   const cfg: Config = { ...defaultConfig, ...config };
+
+  const animationState = { id: 0 };
 
   const image = new Image();
   image.src = systemShockPNG;
   image.onload = () => {
-    start(canvas, image, cfg);
+    start(canvas, image, cfg, animationState);
+  };
+
+  return () => {
+    cancelAnimationFrame(animationState.id);
   };
 }

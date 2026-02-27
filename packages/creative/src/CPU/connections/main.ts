@@ -24,7 +24,7 @@ function logQuadtrees(rootQuadtree: Quadtree<any, any>) {
   console.log("QUADTREES: " + count);
 }
 
-export function main(canvas: HTMLCanvasElement) {
+export function main(canvas: HTMLCanvasElement): () => void {
   const context = setupContext(canvas);
   const renderer = new Renderer(context);
   const quadtree = Field.create();
@@ -34,6 +34,7 @@ export function main(canvas: HTMLCanvasElement) {
   Config.nodes.spawn.active && nodes.push(...Node.spawnRandom());
   Config.nodes.connect.active && Node.connectRandom(nodes);
 
+  let animationId: number;
   const loop = () => {
     quadtree.reset();
     Field.insertNodes(quadtree, nodes);
@@ -64,8 +65,13 @@ export function main(canvas: HTMLCanvasElement) {
 
     Config.log.quadtrees && logQuadtrees(quadtree);
 
-    requestAnimationFrame(loop);
+    animationId = requestAnimationFrame(loop);
   };
 
-  loop();
+  animationId = requestAnimationFrame(loop);
+
+  return () => {
+    cancelAnimationFrame(animationId);
+    input.destroy();
+  };
 }

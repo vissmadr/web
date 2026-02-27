@@ -171,16 +171,16 @@ function setupState(gl: WebGL2RenderingContext, computeProgram: WebGLProgram, re
   gl.bindBuffer(gl.ARRAY_BUFFER, null);
   gl.bindBuffer(gl.TRANSFORM_FEEDBACK_BUFFER, null);
 
-  return { vertexArrayObjects, transformFeedbacks } as const;
+  return { buffers, vertexArrayObjects, transformFeedbacks } as const;
 }
 
-export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) {
+export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}): () => void {
   config = { ...defaultConfig, ...settings };
   const cellsCount = config.rows * config.cols;
 
   const gl = setupGL(canvas);
   const programs = setupPrograms(gl);
-  const { vertexArrayObjects, transformFeedbacks } = setupState(gl, programs.compute, programs.render);
+  const { buffers, vertexArrayObjects, transformFeedbacks } = setupState(gl, programs.compute, programs.render);
 
   let currentState = {
     computeVAO: vertexArrayObjects.compute.heads,
@@ -223,6 +223,7 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) 
   computeLoop();
   renderLoop();
 
+  let animationId: number;
   const animation = () => {
     computeLoop();
     renderLoop();
@@ -231,8 +232,28 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) 
     currentState = nextState;
     nextState = swap;
 
-    requestAnimationFrame(animation);
+    animationId = requestAnimationFrame(animation);
   };
 
-  requestAnimationFrame(animation);
+  animationId = requestAnimationFrame(animation);
+
+  return () => {
+    cancelAnimationFrame(animationId);
+
+    gl.deleteProgram(programs.compute);
+    gl.deleteProgram(programs.render);
+
+    gl.deleteBuffer(buffers.positions);
+    gl.deleteBuffer(buffers.shapeVertex);
+    gl.deleteBuffer(buffers.stateHeads);
+    gl.deleteBuffer(buffers.stateTails);
+
+    gl.deleteVertexArray(vertexArrayObjects.compute.heads);
+    gl.deleteVertexArray(vertexArrayObjects.compute.tails);
+    gl.deleteVertexArray(vertexArrayObjects.render.heads);
+    gl.deleteVertexArray(vertexArrayObjects.render.tails);
+
+    gl.deleteTransformFeedback(transformFeedbacks.heads);
+    gl.deleteTransformFeedback(transformFeedbacks.tails);
+  };
 }

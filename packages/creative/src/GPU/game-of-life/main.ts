@@ -44,7 +44,7 @@ function setupProgram(gl: WebGL2RenderingContext) {
 }
 
 function setupInput(canvas: HTMLCanvasElement) {
-  canvas.addEventListener("pointermove", (event: PointerEvent) => {
+  const onPointerMove = (event: PointerEvent) => {
     const bounds = canvas.getBoundingClientRect();
     input.x = event.clientX - bounds.left;
     input.y = event.clientY - bounds.top;
@@ -53,19 +53,26 @@ function setupInput(canvas: HTMLCanvasElement) {
     input.y /= config.height;
 
     input.y = 1 - input.y;
-  });
-
-  canvas.addEventListener("pointerdown", () => {
+  };
+  const onPointerDown = () => {
     input.clicked = true;
-  });
-
-  window.addEventListener("pointerup", () => {
+  };
+  const onPointerUp = () => {
     input.clicked = false;
-  });
-
-  window.addEventListener("blur", () => {
+  };
+  const onBlur = () => {
     input.clicked = false;
-  });
+  };
+  canvas.addEventListener("pointermove", onPointerMove);
+  canvas.addEventListener("pointerdown", onPointerDown);
+  window.addEventListener("pointerup", onPointerUp);
+  window.addEventListener("blur", onBlur);
+  return () => {
+    canvas.removeEventListener("pointermove", onPointerMove);
+    canvas.removeEventListener("pointerdown", onPointerDown);
+    window.removeEventListener("pointerup", onPointerUp);
+    window.removeEventListener("blur", onBlur);
+  };
 }
 
 function setupGL(canvas: HTMLCanvasElement) {
@@ -157,10 +164,10 @@ function setupUniforms(gl: WebGL2RenderingContext, program: WebGLProgram) {
   } as const;
 }
 
-export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) {
+export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}): () => void {
   config = { ...defaultConfig, ...settings };
 
-  setupInput(canvas);
+  const cleanupInput = setupInput(canvas);
 
   const gl = setupGL(canvas);
   const program = setupProgram(gl);
@@ -206,11 +213,12 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) 
     gl.drawArrays(gl.TRIANGLES, 0, 6);
   };
 
+  let animationId = 0;
   let count = 0;
   const animation = () => {
     count++;
     if (count % (config.skipFrames + 1) !== 0) {
-      requestAnimationFrame(animation);
+      animationId = requestAnimationFrame(animation);
       return;
     }
 
@@ -219,8 +227,18 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) 
 
     currentTextureUnit = 1 - currentTextureUnit;
 
-    requestAnimationFrame(animation);
+    animationId = requestAnimationFrame(animation);
   };
 
-  requestAnimationFrame(animation);
+  animationId = requestAnimationFrame(animation);
+
+  return () => {
+    cancelAnimationFrame(animationId);
+    cleanupInput();
+    gl.deleteProgram(program);
+    gl.deleteVertexArray(vertexArrayObject);
+    gl.deleteTexture(textures.heads);
+    gl.deleteTexture(textures.tails);
+    gl.deleteFramebuffer(framebuffer);
+  };
 }

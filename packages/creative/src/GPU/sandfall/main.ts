@@ -231,7 +231,7 @@ function setupState(gl: WebGL2RenderingContext, computeProgram: WebGLProgram, re
   return { locations, vertexArrayObjects, textures, framebuffers };
 }
 
-export function main(canvas: HTMLCanvasElement) {
+export function main(canvas: HTMLCanvasElement): () => void {
   const gl = setupGL(canvas);
 
   Input.setup(canvas);
@@ -239,6 +239,9 @@ export function main(canvas: HTMLCanvasElement) {
   const programs = setupPrograms(gl);
 
   const { locations, vertexArrayObjects, textures, framebuffers } = setupState(gl, programs.compute, programs.render);
+
+  let animationId = 0;
+  let intervalId: ReturnType<typeof setInterval> | undefined;
 
   let time: number = 0;
   const computeLoop = () => {
@@ -308,12 +311,34 @@ export function main(canvas: HTMLCanvasElement) {
     textures.main2 = textures.aux2;
     textures.aux2 = swap2;
 
-    if (!Config.debug && !Config.limitFPS) requestAnimationFrame(loop);
+    if (!Config.debug && !Config.limitFPS) animationId = requestAnimationFrame(loop);
   };
 
-  requestAnimationFrame(loop);
+  animationId = requestAnimationFrame(loop);
 
   if (Config.debug) Input.setOnDebug(loop);
 
-  if (!Config.debug && Config.limitFPS) setInterval(loop, 1000 / Config.FPS);
+  if (!Config.debug && Config.limitFPS) intervalId = setInterval(loop, 1000 / Config.FPS);
+
+  return () => {
+    cancelAnimationFrame(animationId);
+    if (intervalId !== undefined) clearInterval(intervalId);
+
+    Input.cleanup();
+
+    gl.deleteProgram(programs.compute);
+    gl.deleteProgram(programs.render);
+
+    gl.deleteVertexArray(vertexArrayObjects.update);
+    gl.deleteVertexArray(vertexArrayObjects.render);
+
+    gl.deleteTexture(textures.main0);
+    gl.deleteTexture(textures.aux0);
+    gl.deleteTexture(textures.main1);
+    gl.deleteTexture(textures.aux1);
+    gl.deleteTexture(textures.main2);
+    gl.deleteTexture(textures.aux2);
+
+    gl.deleteFramebuffer(framebuffers.update);
+  };
 }

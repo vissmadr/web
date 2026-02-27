@@ -41,7 +41,7 @@ function renderBackground(context: CanvasRenderingContext2D) {
   context.fillRect(0, 0, config.width, config.height);
 }
 
-export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) {
+export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}): () => void {
   config = { ...defaultConfig, ...settings };
 
   const context = setupContext(canvas);
@@ -53,6 +53,7 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) 
   const yScale = (config.height - config.gap * 2) / config.cols;
 
   let time = 0;
+  let animationId: number;
   const animation = () => {
     time += config.timeIncrement;
 
@@ -77,8 +78,12 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) 
       }
     }
 
-    requestAnimationFrame(animation);
+    animationId = requestAnimationFrame(animation);
   };
 
-  animation();
+  animationId = requestAnimationFrame(animation);
+
+  return () => {
+    cancelAnimationFrame(animationId);
+  };
 }

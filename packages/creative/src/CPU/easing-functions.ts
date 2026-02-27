@@ -124,7 +124,7 @@ function railBackground(context: CanvasRenderingContext2D) {
   }
 }
 
-export function main(canvas: HTMLCanvasElement) {
+export function main(canvas: HTMLCanvasElement): () => void {
   const context = setupContext(canvas);
 
   background(context);
@@ -132,6 +132,7 @@ export function main(canvas: HTMLCanvasElement) {
 
   let time = 0;
 
+  let animationId: number;
   const loop = () => {
     time += Config.increment;
     time %= 1;
@@ -153,7 +154,12 @@ export function main(canvas: HTMLCanvasElement) {
       Canvas2D.line(context, linear, y - Config.radius, linear, y + Config.radius);
     }
 
-    requestAnimationFrame(loop);
+    animationId = requestAnimationFrame(loop);
   };
-  loop();
+
+  animationId = requestAnimationFrame(loop);
+
+  return () => {
+    cancelAnimationFrame(animationId);
+  };
 }

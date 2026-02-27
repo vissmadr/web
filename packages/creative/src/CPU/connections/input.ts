@@ -10,24 +10,42 @@ export class Input {
 
   targetedNodeID: number | null = null;
 
+  private cleanupListeners: () => void;
+
   constructor(target: HTMLElement) {
-    target.addEventListener("pointerdown", () => {
+    const onPointerDown = () => {
       this.isClicked = true;
-    });
+    };
 
-    target.addEventListener("pointerup", () => {
+    const onPointerUp = () => {
       this.isClicked = false;
-    });
+    };
 
-    target.addEventListener("pointermove", (event: PointerEvent) => {
+    const onPointerMove = (event: PointerEvent) => {
       const bounds = target.getBoundingClientRect();
       this.position.x = event.clientX - bounds.left;
       this.position.y = event.clientY - bounds.top;
-    });
+    };
 
-    window.addEventListener("blur", () => {
+    const onBlur = () => {
       this.isClicked = false;
-    });
+    };
+
+    target.addEventListener("pointerdown", onPointerDown);
+    target.addEventListener("pointerup", onPointerUp);
+    target.addEventListener("pointermove", onPointerMove);
+    window.addEventListener("blur", onBlur);
+
+    this.cleanupListeners = () => {
+      target.removeEventListener("pointerdown", onPointerDown);
+      target.removeEventListener("pointerup", onPointerUp);
+      target.removeEventListener("pointermove", onPointerMove);
+      window.removeEventListener("blur", onBlur);
+    };
+  }
+
+  destroy() {
+    this.cleanupListeners();
   }
 
   main(quadtree: Quadtree<Node, any>, nodes: Node[]) {

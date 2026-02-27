@@ -22,12 +22,16 @@ let pointerX: number = 0;
 let pointerY: number = 0;
 
 function setupPointer(onMove: () => void, canvas: HTMLCanvasElement) {
-  canvas.addEventListener("mousemove", (ev: MouseEvent) => {
+  const handler = (ev: MouseEvent) => {
     const canvasBounds = canvas.getBoundingClientRect();
     pointerX = ev.clientX - canvasBounds.left;
     pointerY = ev.clientY - canvasBounds.top;
     onMove();
-  });
+  };
+  canvas.addEventListener("mousemove", handler);
+  return () => {
+    canvas.removeEventListener("mousemove", handler);
+  };
 }
 
 function loadImage(source: string, onLoad: () => void) {
@@ -128,16 +132,22 @@ function setupState(gl: WebGL2RenderingContext, program: WebGLProgram) {
   return vao;
 }
 
-export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) {
+export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}): () => void {
   config = { ...defaultConfig, ...settings };
 
   const sources = [img0, img1, img2, img3];
 
+  const animationState = { id: 0 };
+  let cleanupPointer: (() => void) | undefined;
+  let gl: WebGL2RenderingContext | undefined;
+  let program: WebGLProgram | undefined;
+  let vao: WebGLVertexArrayObject | null | undefined;
+
   loadImages(sources, images, () => {
-    const gl = setupGL(canvas);
-    const program = setupProgram(gl);
+    gl = setupGL(canvas);
+    program = setupProgram(gl);
     const uniforms = setupUniforms(gl, program);
-    const vao = setupState(gl, program);
+    vao = setupState(gl, program);
 
     gl.useProgram(program);
     gl.bindVertexArray(vao);
@@ -149,15 +159,24 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) 
     gl.uniform1i(uniforms.u_image3, 3);
 
     const animation = () => {
-      gl.uniform2f(uniforms.u_pointer, pointerX, canvas.height - pointerY);
+      gl!.uniform2f(uniforms.u_pointer, pointerX, canvas.height - pointerY);
 
-      gl.drawArrays(gl.TRIANGLES, 0, 6);
+      gl!.drawArrays(gl!.TRIANGLES, 0, 6);
 
-      requestAnimationFrame(animation);
+      animationState.id = requestAnimationFrame(animation);
     };
 
-    requestAnimationFrame(animation);
+    animationState.id = requestAnimationFrame(animation);
 
-    setupPointer(animation, canvas);
+    cleanupPointer = setupPointer(animation, canvas);
   });
+
+  return () => {
+    cancelAnimationFrame(animationState.id);
+    cleanupPointer?.();
+    if (gl) {
+      if (program) gl.deleteProgram(program);
+      if (vao) gl.deleteVertexArray(vao);
+    }
+  };
 }

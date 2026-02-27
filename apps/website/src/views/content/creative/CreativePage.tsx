@@ -1,4 +1,4 @@
-import { onMount, Show } from "solid-js";
+import { onMount, onCleanup, Show } from "solid-js";
 import { type CreativeData } from "./creative-data";
 import { TagsContainer } from "./TagsContainer";
 
@@ -13,7 +13,8 @@ export const CreativePage = (props: Props) => {
 
   onMount(() => {
     if (!canvasRef) throw "Invalid canvasRef";
-    props.creative.main(canvasRef, props.creative.config);
+    const cleanup = props.creative.main(canvasRef, props.creative.config);
+    onCleanup(cleanup);
   });
 
   return (

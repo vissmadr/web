@@ -182,9 +182,9 @@ export function get(input_x: number, input_y: number): number {
 
   const result = contribution_A + contribution_B + contribution_C;
 
-  // ---------------------------------------------------------------
+  // -----------------------------------------------------------------
   // -- Arbitrary numbers that fit the output into the [0, 1] range --
-  // ---------------------------------------------------------------
+  // -----------------------------------------------------------------
 
   return result * 49 + 0.5;
 }

@@ -7,6 +7,17 @@ export namespace Input {
   let isPointerDown: boolean = false;
   let spawnKey: Config.SpawnKeys = Config.SpawnKeys.NONE;
 
+  const trackedListeners: { target: EventTarget; type: string; listener: EventListener }[] = [];
+
+  function track<K extends string>(
+    target: EventTarget,
+    type: K,
+    listener: EventListener,
+  ) {
+    target.addEventListener(type, listener);
+    trackedListeners.push({ target, type, listener });
+  }
+
   export function getSpawnKey() {
     return spawnKey;
   }
@@ -29,33 +40,40 @@ export namespace Input {
   }
 
   export function setOnDebug(callback: () => void) {
-    window.addEventListener("keydown", (ev: KeyboardEvent) => {
+    track(window, "keydown", ((ev: KeyboardEvent) => {
       if (ev.key.toLowerCase() === "d") callback();
-    });
+    }) as EventListener);
+  }
+
+  export function cleanup() {
+    for (const { target, type, listener } of trackedListeners) {
+      target.removeEventListener(type, listener);
+    }
+    trackedListeners.length = 0;
   }
 
   function setupPointer(canvas: HTMLCanvasElement) {
-    canvas.addEventListener("pointermove", (ev: PointerEvent) => {
+    track(canvas, "pointermove", ((ev: PointerEvent) => {
       const canvasBounds = canvas.getBoundingClientRect();
       const x = ev.clientX - canvasBounds.left;
       const y = ev.clientY - canvasBounds.top;
 
       pointerCoordinates.set(x / canvas.width, (canvas.height - y) / canvas.height);
-    });
+    }) as EventListener);
 
-    window.addEventListener("pointerdown", () => {
+    track(window, "pointerdown", () => {
       isPointerDown = true;
     });
-    window.addEventListener("pointerup", () => {
+    track(window, "pointerup", () => {
       isPointerDown = false;
     });
-    window.addEventListener("blur", () => {
+    track(window, "blur", () => {
       isPointerDown = false;
     });
   }
 
   function setupKeyboard() {
-    window.addEventListener("keydown", (ev: KeyboardEvent) => {
+    track(window, "keydown", ((ev: KeyboardEvent) => {
       switch (ev.key.toLowerCase()) {
         case "0":
           spawnKey = Config.SpawnKeys.NUM_0;
@@ -87,9 +105,9 @@ export namespace Input {
         default:
           break;
       }
-    });
+    }) as EventListener);
 
-    window.addEventListener("keyup", (ev: KeyboardEvent) => {
+    track(window, "keyup", ((ev: KeyboardEvent) => {
       switch (ev.key.toLowerCase()) {
         case "0":
         case "1":
@@ -104,6 +122,6 @@ export namespace Input {
         default:
           break;
       }
-    });
+    }) as EventListener);
   }
 }

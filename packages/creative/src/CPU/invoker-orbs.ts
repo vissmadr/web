@@ -74,7 +74,7 @@ function setupContext(canvas: HTMLCanvasElement) {
 }
 
 function setupInput() {
-  window.addEventListener("keydown", (event: KeyboardEvent) => {
+  const onKeyDown = (event: KeyboardEvent) => {
     const key = event.key.toLowerCase();
     switch (key) {
       case "q": {
@@ -112,7 +112,13 @@ function setupInput() {
       default:
         break;
     }
-  });
+  };
+
+  window.addEventListener("keydown", onKeyDown);
+
+  return () => {
+    window.removeEventListener("keydown", onKeyDown);
+  };
 }
 
 function renderBackground(context: CanvasRenderingContext2D) {
@@ -293,11 +299,12 @@ function renderSpells(context: CanvasRenderingContext2D) {
   });
 }
 
-export function main(canvas: HTMLCanvasElement) {
-  setupInput();
+export function main(canvas: HTMLCanvasElement): () => void {
+  const cleanupInput = setupInput();
 
   const context = setupContext(canvas);
 
+  let animationId: number;
   const animation = () => {
     decreaseOrbDurations();
 
@@ -305,8 +312,13 @@ export function main(canvas: HTMLCanvasElement) {
     renderQueue(context);
     renderSpells(context);
 
-    requestAnimationFrame(animation);
+    animationId = requestAnimationFrame(animation);
   };
 
-  requestAnimationFrame(animation);
+  animationId = requestAnimationFrame(animation);
+
+  return () => {
+    cancelAnimationFrame(animationId);
+    cleanupInput();
+  };
 }

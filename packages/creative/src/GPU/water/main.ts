@@ -66,7 +66,7 @@ function setupUniforms(gl: WebGL2RenderingContext, program: WebGLProgram) {
   } as const;
 }
 
-export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) {
+export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}): () => void {
   config = { ...defaultConfig, ...settings };
 
   const gl = setupGL(canvas);
@@ -83,12 +83,19 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) 
   gl.clear(gl.COLOR_BUFFER_BIT);
 
   let time = 0;
+  let animationId: number;
   const animation = () => {
     time += config.timeIncrement;
     gl.uniform1f(uniforms.u_time, time);
     gl.drawArrays(gl.TRIANGLES, 0, 6);
-    requestAnimationFrame(animation);
+    animationId = requestAnimationFrame(animation);
   };
 
-  requestAnimationFrame(animation);
+  animationId = requestAnimationFrame(animation);
+
+  return () => {
+    cancelAnimationFrame(animationId);
+    gl.deleteVertexArray(vertexArrayObject);
+    gl.deleteProgram(program);
+  };
 }

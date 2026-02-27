@@ -195,10 +195,10 @@ function setupState(gl: WebGL2RenderingContext, computeProgram: WebGLProgram, re
   gl.bindBuffer(gl.ARRAY_BUFFER, null);
   gl.bindBuffer(gl.TRANSFORM_FEEDBACK_BUFFER, null);
 
-  return { vertexArrayObjects, transformFeedbacks };
+  return { buffers, vertexArrayObjects, transformFeedbacks };
 }
 
-export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) {
+export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}): () => void {
   config = { ...defaultConfig, ...settings };
 
   const gl = canvas.getContext("webgl2");
@@ -209,10 +209,21 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) 
 
   image.src = img;
 
+  const animationState = { id: 0 };
+
+  let glResources: {
+    programs: ReturnType<typeof setupPrograms>;
+    buffers: { positionHeads: WebGLBuffer; positionTails: WebGLBuffer; velocity: WebGLBuffer };
+    vertexArrayObjects: { computeHeads: WebGLVertexArrayObject | null; computeTails: WebGLVertexArrayObject | null; renderHeads: WebGLVertexArrayObject | null; renderTails: WebGLVertexArrayObject | null };
+    transformFeedbacks: { firstPosition: WebGLTransformFeedback | null; nextPosition: WebGLTransformFeedback | null };
+  } | null = null;
+
   image.onload = () => {
     const programs = setupPrograms(gl);
 
-    const { vertexArrayObjects, transformFeedbacks } = setupState(gl, programs.compute, programs.render);
+    const { buffers, vertexArrayObjects, transformFeedbacks } = setupState(gl, programs.compute, programs.render);
+
+    glResources = { programs, buffers, vertexArrayObjects, transformFeedbacks };
 
     setupTexture(gl);
 
@@ -266,9 +277,32 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) 
       swapOne = swapTwo;
       swapTwo = swap;
 
-      requestAnimationFrame(mainLoop);
+      animationState.id = requestAnimationFrame(mainLoop);
     };
 
-    requestAnimationFrame(mainLoop);
+    animationState.id = requestAnimationFrame(mainLoop);
+  };
+
+  return () => {
+    cancelAnimationFrame(animationState.id);
+
+    if (glResources) {
+      const { programs, buffers, vertexArrayObjects, transformFeedbacks } = glResources;
+
+      gl.deleteProgram(programs.compute);
+      gl.deleteProgram(programs.render);
+
+      gl.deleteVertexArray(vertexArrayObjects.computeHeads);
+      gl.deleteVertexArray(vertexArrayObjects.computeTails);
+      gl.deleteVertexArray(vertexArrayObjects.renderHeads);
+      gl.deleteVertexArray(vertexArrayObjects.renderTails);
+
+      gl.deleteTransformFeedback(transformFeedbacks.firstPosition);
+      gl.deleteTransformFeedback(transformFeedbacks.nextPosition);
+
+      gl.deleteBuffer(buffers.positionHeads);
+      gl.deleteBuffer(buffers.positionTails);
+      gl.deleteBuffer(buffers.velocity);
+    }
   };
 }

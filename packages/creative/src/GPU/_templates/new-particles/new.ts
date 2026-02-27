@@ -75,7 +75,7 @@ function setupState(gl: WebGL2RenderingContext, program: WebGLProgram) {
   return vertexArrayObject;
 }
 
-export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) {
+export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}): () => void {
   config = { ...defaultConfig, ...settings };
 
   const gl = setupGL(canvas);
@@ -87,6 +87,7 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) 
   const vertexArrayObject = setupState(gl, program);
 
   let time = 0;
+  let animationId: number;
   const animation = () => {
     time += config.timeIncrement;
 
@@ -98,8 +99,14 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) 
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.drawArrays(gl.POINTS, 0, config.particles);
 
-    requestAnimationFrame(animation);
+    animationId = requestAnimationFrame(animation);
   };
 
-  requestAnimationFrame(animation);
+  animationId = requestAnimationFrame(animation);
+
+  return () => {
+    cancelAnimationFrame(animationId);
+    gl.deleteVertexArray(vertexArrayObject);
+    gl.deleteProgram(program);
+  };
 }

@@ -57,7 +57,7 @@ function setupState(gl: WebGL2RenderingContext, program: WebGLProgram) {
   return vao;
 }
 
-export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) {
+export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}): () => void {
   config = { ...defaultConfig, ...settings };
 
   const gl = setupGL(canvas);
@@ -76,6 +76,7 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) 
   gl.clearColor(0, 0, 0, 1);
 
   let time = 35100;
+  let animationId: number;
   const animation = () => {
     time += config.timeIncrement;
 
@@ -83,8 +84,14 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) 
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.drawArrays(gl.TRIANGLES, 0, 6);
 
-    requestAnimationFrame(animation);
+    animationId = requestAnimationFrame(animation);
   };
 
-  requestAnimationFrame(animation);
+  animationId = requestAnimationFrame(animation);
+
+  return () => {
+    cancelAnimationFrame(animationId);
+    gl.deleteVertexArray(vao);
+    gl.deleteProgram(program);
+  };
 }

@@ -26,7 +26,7 @@ import quadtreeSimulationPNG from "./assets/quadtree-simulation.png";
 export interface CreativeData<T> {
   title: string;
   route: string;
-  main: (canvas: HTMLCanvasElement, settings?: Partial<T>) => void;
+  main: (canvas: HTMLCanvasElement, settings?: Partial<T>) => () => void;
   config?: Partial<T>;
   thumbnail: string;
   tags: TagNames[];

@@ -48,7 +48,7 @@ function setupContext(canvas: HTMLCanvasElement) {
   return context;
 }
 
-export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) {
+export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}): () => void {
   config = { ...defaultConfig, ...settings };
 
   const context = setupContext(canvas);
@@ -59,6 +59,7 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) 
   context.fillStyle = config.colors.background;
   context.fillRect(0, 0, config.size, config.size);
 
+  let animationId: number;
   const animation = () => {
     theta -= config.timeIncrement;
 
@@ -128,8 +129,12 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) 
       (config.text.y + config.text.yGap * 2) * config.size,
     );
 
-    requestAnimationFrame(animation);
+    animationId = requestAnimationFrame(animation);
   };
 
-  requestAnimationFrame(animation);
+  animationId = requestAnimationFrame(animation);
+
+  return () => {
+    cancelAnimationFrame(animationId);
+  };
 }

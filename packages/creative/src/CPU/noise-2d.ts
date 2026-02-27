@@ -27,7 +27,7 @@ function setupContext(canvas: HTMLCanvasElement) {
   return context;
 }
 
-export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) {
+export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}): () => void {
   config = { ...defaultConfig, ...settings };
 
   const context = setupContext(canvas);
@@ -42,6 +42,7 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) 
   const yScale = config.height / config.cellCols;
 
   let time = 0;
+  let animationId: number;
   const animation = () => {
     time += config.timeIncrement;
 
@@ -59,8 +60,12 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) 
       }
     }
 
-    requestAnimationFrame(animation);
+    animationId = requestAnimationFrame(animation);
   };
 
-  animation();
+  animationId = requestAnimationFrame(animation);
+
+  return () => {
+    cancelAnimationFrame(animationId);
+  };
 }

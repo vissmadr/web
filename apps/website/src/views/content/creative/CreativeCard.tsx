@@ -14,7 +14,7 @@ interface Props {
 export const CreativeCard = (props: Props) => {
   return (
     <div class={css.card}>
-      <A href={props.route} target="_blank" rel="noopener noreferrer">
+      <A href={props.route}>
         <div class={css.image_container}>
           <img class={css.image} src={props.thumbnail} />
         </div>

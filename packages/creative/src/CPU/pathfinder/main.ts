@@ -14,7 +14,7 @@ function setupContext(canvas: HTMLCanvasElement) {
   return context;
 }
 
-export async function main(canvas: HTMLCanvasElement) {
+export function main(canvas: HTMLCanvasElement): () => void {
   const context = setupContext(canvas);
 
   const renderer = new Renderer(context);
@@ -33,6 +33,8 @@ export async function main(canvas: HTMLCanvasElement) {
 
   Algorithm.initiate(start, target);
 
+  let animationId: number;
+
   if (Config.runtime === Config.Runtime.INSTANT) {
     while (!Algorithm.getHasEnded()) {
       Algorithm.iterate();
@@ -42,8 +44,12 @@ export async function main(canvas: HTMLCanvasElement) {
     const loop = () => {
       Algorithm.iterate();
       renderer.drawCells(cells);
-      requestAnimationFrame(loop);
+      animationId = requestAnimationFrame(loop);
     };
-    loop();
+    animationId = requestAnimationFrame(loop);
   }
+
+  return () => {
+    cancelAnimationFrame(animationId);
+  };
 }

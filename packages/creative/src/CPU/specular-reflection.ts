@@ -18,7 +18,7 @@ const input = {
 };
 
 function setupInput(canvas: HTMLCanvasElement) {
-  canvas.addEventListener("pointermove", (event: PointerEvent) => {
+  const onPointerMove = (event: PointerEvent) => {
     const bounds = canvas.getBoundingClientRect();
     input.position.x = event.clientX - bounds.left;
     input.position.y = event.clientY - bounds.top;
@@ -30,19 +30,31 @@ function setupInput(canvas: HTMLCanvasElement) {
     input.position.y /= config.height;
 
     input.position.y = 1 - input.position.y;
-  });
+  };
 
-  canvas.addEventListener("pointerdown", () => {
+  const onPointerDown = () => {
     input.isClicked = true;
-  });
+  };
 
-  window.addEventListener("pointerup", () => {
+  const onPointerUp = () => {
     input.isClicked = false;
-  });
+  };
 
-  window.addEventListener("blur", () => {
+  const onBlur = () => {
     input.isClicked = false;
-  });
+  };
+
+  canvas.addEventListener("pointermove", onPointerMove);
+  canvas.addEventListener("pointerdown", onPointerDown);
+  window.addEventListener("pointerup", onPointerUp);
+  window.addEventListener("blur", onBlur);
+
+  return () => {
+    canvas.removeEventListener("pointermove", onPointerMove);
+    canvas.removeEventListener("pointerdown", onPointerDown);
+    window.removeEventListener("pointerup", onPointerUp);
+    window.removeEventListener("blur", onBlur);
+  };
 }
 
 function setupContext(canvas: HTMLCanvasElement) {
@@ -74,16 +86,17 @@ function renderAxes(context: CanvasRenderingContext2D, color: string) {
   Canvas2D.line(context, config.width * 0.5, 0, config.width * 0.5, config.height);
 }
 
-export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) {
+export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}): () => void {
   config = { ...defaultConfig, ...settings };
 
-  setupInput(canvas);
+  const cleanupInput = setupInput(canvas);
   const context = setupContext(canvas);
 
   const normal = new Vector2(0, 4).normalize();
   const light = new Vector2(5, 3);
   const eye = new Vector2(-3, 4);
 
+  let animationId: number;
   const animation = () => {
     renderBackground(context);
     renderAxes(context, "gray");
@@ -108,8 +121,13 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) 
 
     context.resetTransform();
 
-    requestAnimationFrame(animation);
+    animationId = requestAnimationFrame(animation);
   };
 
-  requestAnimationFrame(animation);
+  animationId = requestAnimationFrame(animation);
+
+  return () => {
+    cancelAnimationFrame(animationId);
+    cleanupInput();
+  };
 }

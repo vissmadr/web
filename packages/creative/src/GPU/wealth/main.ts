@@ -331,11 +331,11 @@ function setupState(gl: WebGL2RenderingContext, computeProgram: WebGLProgram, re
   gl.bindBuffer(gl.ARRAY_BUFFER, null);
   gl.bindBuffer(gl.TRANSFORM_FEEDBACK_BUFFER, null);
 
-  return { particleCount: data.particleCount, uniforms, vertexArrayObjects, transformFeedbacks } as const;
+  return { particleCount: data.particleCount, uniforms, buffers, vertexArrayObjects, transformFeedbacks } as const;
 }
 
 function setupInput(canvas: HTMLCanvasElement) {
-  canvas.addEventListener("pointermove", (event: PointerEvent) => {
+  const onPointerMove = (event: PointerEvent) => {
     const bounds = canvas.getBoundingClientRect();
     input.x = event.clientX - bounds.left;
     input.y = event.clientY - bounds.top;
@@ -344,31 +344,38 @@ function setupInput(canvas: HTMLCanvasElement) {
     input.y /= config.height;
 
     input.y = 1 - input.y;
-  });
-
-  canvas.addEventListener("pointerdown", () => {
+  };
+  const onPointerDown = () => {
     input.clicked = true;
-  });
-
-  window.addEventListener("pointerup", () => {
+  };
+  const onPointerUp = () => {
     input.clicked = false;
-  });
-
-  window.addEventListener("blur", () => {
+  };
+  const onBlur = () => {
     input.clicked = false;
-  });
+  };
+  canvas.addEventListener("pointermove", onPointerMove);
+  canvas.addEventListener("pointerdown", onPointerDown);
+  window.addEventListener("pointerup", onPointerUp);
+  window.addEventListener("blur", onBlur);
+  return () => {
+    canvas.removeEventListener("pointermove", onPointerMove);
+    canvas.removeEventListener("pointerdown", onPointerDown);
+    window.removeEventListener("pointerup", onPointerUp);
+    window.removeEventListener("blur", onBlur);
+  };
 }
 
-export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) {
+export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}): () => void {
   config = { ...defaultConfig, ...settings };
 
-  setupInput(canvas);
+  const cleanupInput = setupInput(canvas);
 
   const gl = setupGL(canvas);
 
   const programs = setupPrograms(gl);
 
-  const { particleCount, uniforms, vertexArrayObjects, transformFeedbacks } = setupState(
+  const { particleCount, uniforms, vertexArrayObjects, transformFeedbacks, buffers } = setupState(
     gl,
     programs.compute,
     programs.render,
@@ -432,6 +439,7 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) 
     renderVAO: WebGLVertexArrayObject;
   };
 
+  let animationId = 0;
   const mainLoop = () => {
     computeLoop();
     renderLoop();
@@ -440,8 +448,26 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) 
     swapOne = swapTwo;
     swapTwo = swap;
 
-    requestAnimationFrame(mainLoop);
+    animationId = requestAnimationFrame(mainLoop);
   };
 
-  requestAnimationFrame(mainLoop);
+  animationId = requestAnimationFrame(mainLoop);
+
+  return () => {
+    cancelAnimationFrame(animationId);
+    cleanupInput();
+    gl.deleteProgram(programs.compute);
+    gl.deleteProgram(programs.render);
+    gl.deleteBuffer(buffers.positionHeads);
+    gl.deleteBuffer(buffers.positionTails);
+    gl.deleteBuffer(buffers.textOrigin);
+    gl.deleteBuffer(buffers.noiseOrigin);
+    gl.deleteBuffer(buffers.random);
+    gl.deleteVertexArray(vertexArrayObjects.compute.heads);
+    gl.deleteVertexArray(vertexArrayObjects.compute.tails);
+    gl.deleteVertexArray(vertexArrayObjects.render.heads);
+    gl.deleteVertexArray(vertexArrayObjects.render.tails);
+    gl.deleteTransformFeedback(transformFeedbacks.heads);
+    gl.deleteTransformFeedback(transformFeedbacks.tails);
+  };
 }

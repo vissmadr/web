@@ -27,23 +27,35 @@ function setupContext(canvas: HTMLCanvasElement) {
 }
 
 function setupInput(canvas: HTMLCanvasElement) {
-  canvas.addEventListener("pointermove", (event: PointerEvent) => {
+  const onPointerMove = (event: PointerEvent) => {
     const bounds = canvas.getBoundingClientRect();
     input.x = event.clientX - bounds.left;
     input.y = event.clientY - bounds.top;
-  });
+  };
 
-  canvas.addEventListener("pointerdown", () => {
+  const onPointerDown = () => {
     input.clicked = true;
-  });
+  };
 
-  window.addEventListener("pointerup", () => {
+  const onPointerUp = () => {
     input.clicked = false;
-  });
+  };
 
-  window.addEventListener("blur", () => {
+  const onBlur = () => {
     input.clicked = false;
-  });
+  };
+
+  canvas.addEventListener("pointermove", onPointerMove);
+  canvas.addEventListener("pointerdown", onPointerDown);
+  window.addEventListener("pointerup", onPointerUp);
+  window.addEventListener("blur", onBlur);
+
+  return () => {
+    canvas.removeEventListener("pointermove", onPointerMove);
+    canvas.removeEventListener("pointerdown", onPointerDown);
+    window.removeEventListener("pointerup", onPointerUp);
+    window.removeEventListener("blur", onBlur);
+  };
 }
 
 function createParticles() {
@@ -108,10 +120,10 @@ function createImageData(context: CanvasRenderingContext2D, image: HTMLImageElem
   return arr;
 }
 
-export async function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) {
+export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}): () => void {
   config = { ...defaultConfig, ...settings };
 
-  setupInput(canvas);
+  const cleanupInput = setupInput(canvas);
   const context = setupContext(canvas);
   const particles = createParticles();
 
@@ -120,6 +132,8 @@ export async function main(canvas: HTMLCanvasElement, settings: Partial<Config> 
   // -----------
   // -- Image --
   // -----------
+
+  let animationId: number;
 
   const img = new Image();
   img.src = theSeerPNG;
@@ -180,9 +194,14 @@ export async function main(canvas: HTMLCanvasElement, settings: Partial<Config> 
         context.fillRect(particle.x, particle.y, size, size);
       }
 
-      requestAnimationFrame(loop);
+      animationId = requestAnimationFrame(loop);
     };
 
-    requestAnimationFrame(loop);
+    animationId = requestAnimationFrame(loop);
+  };
+
+  return () => {
+    cancelAnimationFrame(animationId);
+    cleanupInput();
   };
 }

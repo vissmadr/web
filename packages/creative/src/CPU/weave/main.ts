@@ -132,7 +132,7 @@ function createLinks(pins: Vector2[], imageData: number[][]) {
   return removedBrightnessLinks;
 }
 
-function start(canvas: HTMLCanvasElement, image: HTMLImageElement) {
+function start(canvas: HTMLCanvasElement, image: HTMLImageElement, animationState: { id: number }) {
   const context = setupContext(canvas);
 
   const pins = createPins();
@@ -172,19 +172,25 @@ function start(canvas: HTMLCanvasElement, image: HTMLImageElement) {
       iteration();
     }
 
-    requestAnimationFrame(animation);
+    animationState.id = requestAnimationFrame(animation);
   };
 
-  requestAnimationFrame(animation);
+  animationState.id = requestAnimationFrame(animation);
 }
 
-export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) {
+export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}): () => void {
   config = { ...defaultConfig, ...settings };
   scale = config.canvasSize / config.gridSize;
+
+  const animationState = { id: 0 };
 
   const image = new Image(config.gridSize, config.gridSize);
   image.src = imagePNG;
   image.onload = () => {
-    start(canvas, image);
+    start(canvas, image, animationState);
+  };
+
+  return () => {
+    cancelAnimationFrame(animationState.id);
   };
 }
