@@ -9,6 +9,7 @@ import vissmadrPNG from "./vissmadr.png";
 export const Hero = () => {
   let canvasRef: HTMLCanvasElement | undefined;
   let containerRef: HTMLDivElement | undefined;
+  let cleanupSandtext: (() => void) | undefined;
 
   const [isCanvasLoaded, setIsCanvasLoaded] = createSignal(false);
 
@@ -20,7 +21,9 @@ export const Hero = () => {
   };
 
   onMount(() => {
-    setIsCanvasLoaded(Sandtext.main(canvasRef!));
+    const cleanup = Sandtext.main(canvasRef!);
+    cleanupSandtext = cleanup || undefined;
+    setIsCanvasLoaded(Boolean(cleanup));
 
     resize();
     window.addEventListener("resize", resize);
@@ -28,6 +31,7 @@ export const Hero = () => {
 
   onCleanup(() => {
     window.removeEventListener("resize", resize);
+    cleanupSandtext?.();
   });
 
   return (
@@ -37,7 +41,7 @@ export const Hero = () => {
           <canvas class={css.canvas} ref={canvasRef} />
 
           <Show when={!isCanvasLoaded()}>
-            <img class={css.backupimage} src={vissmadrPNG} />
+            <img class={css.backupimage} src={vissmadrPNG} alt="vissmadr" />
           </Show>
         </A>
       </div>

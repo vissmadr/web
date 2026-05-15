@@ -1,28 +1,53 @@
 .card {
-  background-color: #333;
-
-  border-radius: 4px;
-
-  width: 300px;
-  min-width: 300px;
-  max-width: 300px;
-
-  opacity: 80%;
-  transition: 200ms;
+  overflow: hidden;
+  width: min(100%, 300px);
+  background: #2d2d2d;
+  border: 1px solid #3a3a3a;
+  border-radius: 10px;
+  opacity: 0.86;
+  transition:
+    border-color 180ms ease,
+    opacity 180ms ease,
+    transform 180ms ease;
 }
 
-.card:hover {
-  opacity: 100%;
-  transition: 200ms;
+.card:hover,
+.card:focus-within {
+  opacity: 1;
+  border-color: #686868;
+  transform: translateY(-2px);
 }
 
-.image_container {
-  padding: 8px;
+.link {
+  display: block;
+  height: 100%;
+}
+
+.link:focus-visible {
+  outline: 2px solid #ffb200;
+  outline-offset: -2px;
+}
+
+.imageContainer {
+  padding: 6px;
 }
 
 .image {
   width: 100%;
   aspect-ratio: 1 / 1;
-  border-radius: 8px;
+  border-radius: 7px;
   object-fit: cover;
+}
+
+.content {
+  padding: 0 10px 10px;
+}
+
+.title {
+  margin: 2px 0 8px;
+  color: #d8d8d8;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-align: left;
 }

@@ -6,6 +6,13 @@
   padding: 8px 0;
 }
 
+.wrapperCompact {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 0;
+}
+
 .tags_container {
   display: flex;
   gap: 4px;
@@ -17,9 +24,9 @@
 
 .tag {
   border-radius: 4px;
-  padding: 2px 4px;
+  padding: 2px 5px;
 
-  height: 26px;
+  min-height: 22px;
 
   display: flex;
   justify-content: center;
@@ -28,5 +35,6 @@
   font-family: monospace;
   font-weight: bold;
   text-align: center;
-  font-size: 14px;
+  font-size: 12px;
+  line-height: 1;
 }

@@ -1,11 +1,20 @@
 body {
-  background-color: #242424;
+  background:
+    radial-gradient(circle at top, #303030 0, #242424 38rem),
+    #242424;
   color: #999999;
 
   font-family: "Noto Sans Runic", Arial, Helvetica, sans-serif;
   font-size: 16px;
 
-  justify-content: center;
-  align-items: center;
   text-align: center;
+}
+
+::selection {
+  background: #ffb200;
+  color: #151515;
+}
+
+a {
+  -webkit-tap-highlight-color: transparent;
 }

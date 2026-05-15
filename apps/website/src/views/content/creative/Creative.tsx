@@ -7,7 +7,7 @@ import css from "./Creative.module.css";
 export const Creative = () => {
   return (
     <section aria-label="Creative">
-      <div class={css.cards_container}>
+      <div class={css.cardsContainer}>
         <For each={creatives}>
           {(creative) => (
             <CreativeCard

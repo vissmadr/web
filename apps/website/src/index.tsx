@@ -13,7 +13,7 @@ import "./styles/reset.css";
 import "./styles/style.css";
 
 const root = document.getElementById("root");
-if (!root) throw "Invalid #root HTML element!";
+if (!root) throw new Error("Invalid #root HTML element!");
 
 const App = () => (
   <Router root={Layout}>

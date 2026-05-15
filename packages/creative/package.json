@@ -2,7 +2,11 @@
   "name": "@packages/creative",
   "type": "module",
   "private": true,
-  "exports": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./CPU/*": "./src/CPU/*.ts",
+    "./GPU/*": "./src/GPU/*.ts"
+  },
   "types": "./src/index.ts",
   "scripts": {
     "check": "tsc --noEmit"

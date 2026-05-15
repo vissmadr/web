@@ -4,10 +4,10 @@ import { Creative } from "./creative/Creative";
 
 export const Content = () => {
   return (
-    <main>
+    <div>
       <About />
       <Contact />
       <Creative />
-    </main>
+    </div>
   );
 };

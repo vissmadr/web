@@ -5,12 +5,7 @@
   justify-content: center;
   text-align: center;
 
-  padding: 8px 0;
-}
-
-.title {
-  margin: 8px auto;
-  font-size: 26px;
+  padding: 10px 0 24px;
 }
 
 .tags {
@@ -19,14 +14,17 @@
 
 .canvascontainer {
   width: 100%;
-  padding: 8px;
+  max-width: min(100vw, 1120px);
+  padding: 8px 12px;
 }
 
 .canvas {
   margin: 8px auto;
   border: 2px solid #444444;
 
-  width: inherit;
+  display: block;
+  width: 100%;
+  max-height: min(72vh, 900px);
 
   border-radius: 8px;
 }
@@ -35,4 +33,5 @@
   margin: 8px auto;
   max-width: 600px;
   text-align: center;
+  color: #8e8e8e;
 }

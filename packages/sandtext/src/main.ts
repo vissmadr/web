@@ -16,21 +16,26 @@ const particleCount = Math.floor(particleOrigins.length / 2);
 let config: Config;
 let mainCanvas: HTMLCanvasElement;
 let gl: WebGL2RenderingContext;
+let isGLReady = false;
 
 function setupGL() {
+  isGLReady = false;
   try {
     const tryGL = mainCanvas.getContext("webgl2");
-    if (!tryGL) throw "Failed getting webgl2 context";
+    if (!tryGL) throw new Error("Failed getting webgl2 context");
     gl = tryGL;
   } catch (error) {
-    console.error("Failed getting webgl2 context");
-    return null;
+    console.error("Failed getting webgl2 context", error);
+    return false;
   }
 
+  isGLReady = true;
   resize(config.imageWidth, config.imageHeight);
+  return true;
 }
 
 export function resize(width: number, height: number) {
+  if (!isGLReady) return;
   mainCanvas.width = width;
   mainCanvas.height = height;
 
@@ -228,8 +233,7 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) 
   mainCanvas = canvas;
   if (!mainCanvas) return false;
 
-  setupGL();
-  if (!gl) return false;
+  if (!setupGL()) return false;
 
   const programs = setupPrograms();
 
@@ -285,6 +289,7 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) 
     renderVAO: WebGLVertexArrayObject;
   };
 
+  let animationId = 0;
   let lastFrame = 0;
   const fpsTarget = 1_000 / config.FPS;
   const loop = (now: number) => {
@@ -300,10 +305,13 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}) 
       lastFrame = now - (delta % fpsTarget);
     }
 
-    requestAnimationFrame(loop);
+    animationId = requestAnimationFrame(loop);
   };
 
-  requestAnimationFrame(loop);
+  animationId = requestAnimationFrame(loop);
 
-  return true;
+  return () => {
+    cancelAnimationFrame(animationId);
+    isGLReady = false;
+  };
 }

@@ -14,9 +14,9 @@ const Tag = (props: TagData) => {
   );
 };
 
-export const TagsContainer = (props: { tags: TagNames[] }) => {
+export const TagsContainer = (props: { tags: TagNames[]; compact?: boolean }) => {
   return (
-    <div class={css.wrapper}>
+    <div class={props.compact ? css.wrapperCompact : css.wrapper}>
       <div class={css.tags_container}>
         <For each={props.tags}>
           {(tagName) => {
