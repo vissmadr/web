@@ -43,11 +43,8 @@ function setupContext(canvas: HTMLCanvasElement) {
   canvas.width = config.width;
   canvas.height = config.height;
 
-  const context = canvas.getContext("2d");
+  const context = canvas.getContext("2d", { alpha: false, desynchronized: true });
   if (!context) throw "Cannot get 2d context";
-
-  context.strokeStyle = "#000000";
-  context.lineWidth = 0.05;
 
   return context;
 }
@@ -106,7 +103,6 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}):
       moveWalker(walker);
       context.fillStyle = walker.color;
       context.fillRect(walker.x, walker.y, config.size, config.size);
-      context.strokeRect(walker.x, walker.y, config.size, config.size);
     }
 
     animationId = requestAnimationFrame(animation);

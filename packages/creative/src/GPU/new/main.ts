@@ -22,7 +22,7 @@ function setupProgram(gl: WebGL2RenderingContext) {
 }
 
 function setupGL(canvas: HTMLCanvasElement) {
-  const gl = canvas.getContext("webgl2");
+  const gl = canvas.getContext("webgl2", { alpha: false, antialias: false, powerPreference: "high-performance" });
   if (!gl) throw new Error("Failed to get WebGL2 context");
 
   canvas.width = config.canvasWidth;

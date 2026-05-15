@@ -71,7 +71,7 @@ function setupContext(canvas: HTMLCanvasElement) {
   canvas.width = Config.width;
   canvas.height = height;
 
-  const context = canvas.getContext("2d");
+  const context = canvas.getContext("2d", { alpha: false, desynchronized: true });
   if (!context) throw "Cannot get 2d context";
 
   context.strokeStyle = Config.colors.main;

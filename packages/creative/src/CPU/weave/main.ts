@@ -14,7 +14,7 @@ function setupContext(canvas: HTMLCanvasElement) {
   canvas.height = config.canvasSize;
   canvas.style.borderRadius = "50%";
 
-  const context = canvas.getContext("2d");
+  const context = canvas.getContext("2d", { alpha: false, desynchronized: true });
   if (!context) throw "Cannot get 2d context";
 
   context.lineWidth = config.lineWidth;
@@ -48,7 +48,7 @@ function createImageData(image: HTMLImageElement) {
   auxCanvas.width = config.gridSize;
   auxCanvas.height = config.gridSize;
 
-  const auxContext = auxCanvas.getContext("2d");
+  const auxContext = auxCanvas.getContext("2d", { willReadFrequently: true });
   if (!auxContext) throw new Error("Cannot get 2d context!");
 
   auxContext.fillStyle = "#FFFFFF";

@@ -1,5 +1,4 @@
 import { NoiseGLSL } from "@utilities/noise-glsl";
-import { Random } from "@utilities/random";
 import { WebGL } from "@utilities/webgl";
 import { Noise } from "@utilities/noise";
 
@@ -18,7 +17,7 @@ const input = {
 };
 
 function setupGL(canvas: HTMLCanvasElement) {
-  const gl = canvas.getContext("webgl2");
+  const gl = canvas.getContext("webgl2", { alpha: false, antialias: false, powerPreference: "high-performance" });
   if (!gl) throw new Error("Failed to get WebGL2 context");
 
   canvas.width = config.width;
@@ -103,15 +102,11 @@ function createTextOrigins() {
     config.textLineHeight,
   );
 
-  const image = new Image();
-  image.src = auxCanvas.toDataURL();
-
-  auxContext.drawImage(image, 0, 0, config.width, config.height);
   const imageData = auxContext.getImageData(0, 0, config.width, config.height).data;
 
   auxContext.clearRect(0, 0, config.width, config.height);
 
-  const particleOrigins: { x: number; y: number }[] = [];
+  const particleOrigins: number[] = [];
 
   for (let i = 0; i < imageData.length; i += 4) {
     const r = imageData[i + 0];
@@ -120,10 +115,10 @@ function createTextOrigins() {
 
     const index = i / 4;
     const x = index % config.width;
-    const y = Math.floor(index / config.height);
+    const y = Math.floor(index / config.width);
 
     if (r + g + b > 100) {
-      particleOrigins.push({ x, y });
+      particleOrigins.push(x / config.width, (config.height - y) / config.height);
     }
   }
 
@@ -133,40 +128,37 @@ function createTextOrigins() {
 function generateData() {
   const particleTextOrigins = createTextOrigins();
 
-  const count = particleTextOrigins.length;
+  const count = particleTextOrigins.length / 2;
 
-  const textOrigins: number[] = [];
-  for (let i = 0; i < count; i++) {
-    const origin = particleTextOrigins[i];
-    textOrigins.push(origin.x / config.width);
-    textOrigins.push((config.height - origin.y) / config.height);
-  }
+  const textOrigins = new Float32Array(particleTextOrigins);
 
-  const messOrigins: number[] = [];
+  const messOrigins = new Float32Array(count * 2);
   for (let i = 0; i < count; i++) {
     const xNoise = Noise.Simplex.getFractal((i + 1.2345) * 0.5, (i - 1.2345) * 0.1, 2);
     const yNoise = Noise.Simplex.getFractal((i + 9.8765) * 0.5, (i + 6.3719) * 0.1, 2);
-    messOrigins.push(xNoise);
-    messOrigins.push(yNoise);
+    const index = i * 2;
+    messOrigins[index] = xNoise;
+    messOrigins[index + 1] = yNoise;
   }
 
-  const spawnPositions: number[] = [];
+  const spawnPositions = new Float32Array(count * 2);
   for (let i = 0; i < count; i++) {
-    spawnPositions.push(Random.range(0, 1));
-    spawnPositions.push(Random.range(0, 1));
+    const index = i * 2;
+    spawnPositions[index] = Math.random();
+    spawnPositions[index + 1] = Math.random();
   }
 
-  const random: number[] = [];
+  const random = new Float32Array(count);
   for (let i = 0; i < count; i++) {
-    random.push(Math.random());
+    random[i] = Math.random();
   }
 
   return {
     particleCount: count,
-    spawnPositions: new Float32Array(spawnPositions),
-    textOrigins: new Float32Array(textOrigins),
-    messOrigins: new Float32Array(messOrigins),
-    random: new Float32Array(random),
+    spawnPositions,
+    textOrigins,
+    messOrigins,
+    random,
   } as const;
 }
 
@@ -397,6 +389,9 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}):
   gl.uniform2f(uniforms.compute.u_returnSpeed, config.returnSpeed.min, config.returnSpeed.max);
   gl.uniform1f(uniforms.compute.u_repelRadius, config.repelRadius);
   gl.uniform1f(uniforms.compute.u_repelSpeed, config.repelSpeed);
+  gl.uniform1f(uniforms.compute.u_noiseFrequency, config.noiseFrequency);
+  gl.uniform1f(uniforms.compute.u_textNoiseEffect, config.textNoiseEffect);
+  gl.uniform1f(uniforms.compute.u_messNoiseEffect, config.messNoiseEffect);
   gl.useProgram(programs.render);
   gl.uniform2f(uniforms.render.u_size, config.size.min, config.size.max);
 
@@ -409,9 +404,6 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}):
     gl.bindVertexArray(swapOne.computeVAO);
 
     gl.uniform1f(uniforms.compute.u_time, time);
-    gl.uniform1f(uniforms.compute.u_noiseFrequency, config.noiseFrequency);
-    gl.uniform1f(uniforms.compute.u_textNoiseEffect, config.textNoiseEffect);
-    gl.uniform1f(uniforms.compute.u_messNoiseEffect, config.messNoiseEffect);
     gl.uniform1f(uniforms.compute.u_isPressed, input.clicked ? 1 : 0);
     gl.uniform2f(uniforms.compute.u_input, input.x, input.y);
 

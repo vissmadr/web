@@ -10,7 +10,7 @@ import renderVertex from "./shaders/render/vertex.glsl";
 import renderFragment from "./shaders/render/fragment.glsl";
 
 function setupGL(canvas: HTMLCanvasElement) {
-  const gl = canvas.getContext("webgl2");
+  const gl = canvas.getContext("webgl2", { alpha: false, antialias: false, powerPreference: "high-performance" });
   if (!gl) throw "Failed to get WebGL2 context";
 
   canvas.width = Config.width;

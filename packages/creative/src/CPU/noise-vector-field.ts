@@ -30,7 +30,7 @@ function setupContext(canvas: HTMLCanvasElement) {
   canvas.width = config.width;
   canvas.height = config.height;
 
-  const context = canvas.getContext("2d");
+  const context = canvas.getContext("2d", { alpha: false, desynchronized: true });
   if (!context) throw "Cannot get 2d context";
 
   return context;

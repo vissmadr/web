@@ -25,7 +25,7 @@ function setupProgram(gl: WebGL2RenderingContext) {
 }
 
 function setupGL(canvas: HTMLCanvasElement) {
-  const gl = canvas.getContext("webgl2");
+  const gl = canvas.getContext("webgl2", { alpha: false, antialias: false, powerPreference: "high-performance" });
   if (!gl) throw new Error("Failed to get WebGL2 context");
 
   canvas.width = config.canvasWidth;
@@ -56,7 +56,7 @@ function setupState(gl: WebGL2RenderingContext, program: WebGLProgram) {
   gl.enableVertexAttribArray(attributes.a_canvasVertices);
   gl.vertexAttribPointer(attributes.a_canvasVertices, 2, gl.FLOAT, false, 0, 0);
 
-  return vertexArrayObject;
+  return { vertexArrayObject, buffer } as const;
 }
 
 function setupUniforms(gl: WebGL2RenderingContext, program: WebGLProgram) {
@@ -72,7 +72,7 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}):
   const gl = setupGL(canvas);
   const program = setupProgram(gl);
   const uniforms = setupUniforms(gl, program);
-  const vertexArrayObject = setupState(gl, program);
+  const { vertexArrayObject, buffer } = setupState(gl, program);
 
   gl.useProgram(program);
   gl.bindVertexArray(vertexArrayObject);
@@ -96,6 +96,7 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}):
   return () => {
     cancelAnimationFrame(animationId);
     gl.deleteVertexArray(vertexArrayObject);
+    gl.deleteBuffer(buffer);
     gl.deleteProgram(program);
   };
 }

@@ -93,7 +93,7 @@ function setupContext(canvas: HTMLCanvasElement) {
   canvas.width = config.width;
   canvas.height = config.height;
 
-  const context = canvas.getContext("2d");
+  const context = canvas.getContext("2d", { alpha: false, desynchronized: true });
   if (!context) throw "Cannot get 2d context!";
 
   return context;
@@ -105,7 +105,7 @@ function renderBackground(context: CanvasRenderingContext2D) {
 }
 
 function setupSprites() {
-  const sprites: HTMLImageElement[] = [];
+  const sprites: HTMLCanvasElement[] = [];
 
   const width = config.spriteWidth;
   const height = config.spriteHeight;
@@ -114,26 +114,21 @@ function setupSprites() {
 
   const yOffset = height * 0.1;
 
-  const offscreenCanvas = document.createElement("canvas");
-  offscreenCanvas.width = width;
-  offscreenCanvas.height = height;
-
-  const offscreenContext = offscreenCanvas.getContext("2d");
-  if (!offscreenContext) throw "Cannot get 2d context!";
-  offscreenContext.font = `${width}px Arial, sans-serif`;
-  offscreenContext.fillStyle = config.colors.font;
-  offscreenContext.textAlign = "center";
-  offscreenContext.textBaseline = "middle";
-  offscreenContext.textRendering = "optimizeLegibility";
-
   for (let i = 0; i < config.characters.length; i++) {
-    offscreenContext.clearRect(0, 0, width, height);
-    offscreenContext.fillText(config.characters[i], halfWidth, halfHeight + yOffset);
+    const sprite = document.createElement("canvas");
+    sprite.width = width;
+    sprite.height = height;
 
-    const img = new Image();
-    img.src = offscreenCanvas.toDataURL();
+    const spriteContext = sprite.getContext("2d", { alpha: true });
+    if (!spriteContext) throw "Cannot get 2d context!";
+    spriteContext.font = `${width}px Arial, sans-serif`;
+    spriteContext.fillStyle = config.colors.font;
+    spriteContext.textAlign = "center";
+    spriteContext.textBaseline = "middle";
+    spriteContext.textRendering = "optimizeLegibility";
+    spriteContext.fillText(config.characters[i], halfWidth, halfHeight + yOffset);
 
-    sprites.push(img);
+    sprites.push(sprite);
   }
 
   return sprites;
@@ -149,6 +144,17 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}):
   const size = (config.width - 2 * config.gap) / config.spriteWidth;
   const gap = config.gap * config.gapOffset;
   const charactersLength = config.characters.length;
+  const xPositions = new Float32Array(size);
+  const yPositions = new Float32Array(size);
+  const xNoiseOffsets = new Float32Array(size);
+  const yNoiseOffsets = new Float32Array(size);
+
+  for (let i = 0; i < size; i++) {
+    xPositions[i] = gap + i * config.spriteWidth;
+    yPositions[i] = gap + i * config.spriteHeight;
+    xNoiseOffsets[i] = i * config.noiseFrequency;
+    yNoiseOffsets[i] = i * config.noiseFrequency;
+  }
 
   let time = 0;
   let animationId: number;
@@ -159,14 +165,11 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}):
 
     for (let x = 0; x < size; x++) {
       for (let y = 0; y < size; y++) {
-        const xPosition = gap + x * config.spriteWidth;
-        const yPosition = gap + y * config.spriteHeight;
+        const noiseValue = Noise.Simplex.get(xNoiseOffsets[x] + time, yNoiseOffsets[y] + time);
 
-        const noiseValue = Noise.Simplex.get(x * config.noiseFrequency + time, y * config.noiseFrequency + time);
+        const noiseIndex = Math.min(Math.floor(Mathematics.lerp(0, charactersLength, noiseValue)) | 0, charactersLength - 1);
 
-        const noiseIndex = Math.floor(Mathematics.lerp(0, charactersLength, noiseValue)) | 0;
-
-        context.drawImage(sprites[noiseIndex], xPosition, yPosition);
+        context.drawImage(sprites[noiseIndex], xPositions[x], yPositions[y]);
       }
     }
 

@@ -58,7 +58,7 @@ function setupContext(canvas: HTMLCanvasElement) {
   canvas.width = config.width;
   canvas.height = config.height;
 
-  const context = canvas.getContext("2d");
+  const context = canvas.getContext("2d", { alpha: false, desynchronized: true });
   if (!context) throw "Cannot get 2d context";
 
   context.strokeStyle = config.colors.stroke;
@@ -151,8 +151,12 @@ function decayOrb(orb: Orb) {
   if (orb.radius <= 0) orb.isAlive = false;
 }
 
-function spawnOrb(orb: Orb) {
-  orb.isAlive = true;
+function spawnOrb(orb: Orb, activeOrbs: Orb[]) {
+  if (!orb.isAlive) {
+    orb.isAlive = true;
+    activeOrbs.push(orb);
+  }
+
   orb.radius = config.radius;
   orb.x = input.x;
   orb.y = input.y;
@@ -177,6 +181,7 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}):
   const context = setupContext(canvas);
 
   const orbs = createOrbsPool();
+  const activeOrbs: Orb[] = [];
 
   renderBackground(context);
 
@@ -189,17 +194,24 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}):
     if (input.clicked) {
       for (let i = 0; i < config.iterations; i++) {
         const orb = orbs[orbIndex];
-        spawnOrb(orb);
+        spawnOrb(orb, activeOrbs);
         orbIndex++;
         orbIndex %= config.orbsPooled;
       }
     }
 
-    for (const orb of orbs) {
-      if (!orb.isAlive) continue;
+    for (let i = activeOrbs.length - 1; i >= 0; i--) {
+      const orb = activeOrbs[i];
       moveOrb(orb, time);
       renderOrb(orb, context);
       decayOrb(orb);
+
+      if (!orb.isAlive) {
+        const lastOrb = activeOrbs.pop();
+        if (lastOrb && lastOrb !== orb) {
+          activeOrbs[i] = lastOrb;
+        }
+      }
     }
 
     animationId = requestAnimationFrame(animation);

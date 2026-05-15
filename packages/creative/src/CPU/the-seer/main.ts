@@ -20,7 +20,7 @@ function setupContext(canvas: HTMLCanvasElement) {
 
   canvas.style.border = "1.5px solid gray";
 
-  const context = canvas.getContext("2d");
+  const context = canvas.getContext("2d", { alpha: false, desynchronized: true, willReadFrequently: true });
   if (!context) throw "Cannot get 2d context";
 
   return context;
@@ -102,19 +102,23 @@ function createImageData(context: CanvasRenderingContext2D, image: HTMLImageElem
   const imageData = context.getImageData(0, 0, config.imageWidth, config.imageHeight).data;
   context.clearRect(0, 0, config.width, config.height);
 
-  const arr: string[][] = [];
+  const arr: string[] = new Array(config.imageWidth * config.imageHeight);
+  const colorCache = new Map<number, string>();
 
   for (let i = 0; i < imageData.length; i += 4) {
     const r = imageData[i + 0];
     const g = imageData[i + 1];
     const b = imageData[i + 2];
 
-    const index = i / 4;
-    const x = index % config.imageWidth;
-    const y = Math.floor(index / config.imageWidth);
-
-    if (!arr[x]) arr[x] = [];
-    arr[x][y] = `rgb(${r},${g},${b})`;
+    const colorKey = (r << 16) | (g << 8) | b;
+    const cachedColor = colorCache.get(colorKey);
+    if (cachedColor) {
+      arr[i / 4] = cachedColor;
+    } else {
+      const color = `rgb(${r},${g},${b})`;
+      colorCache.set(colorKey, color);
+      arr[i / 4] = color;
+    }
   }
 
   return arr;
@@ -126,6 +130,7 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}):
   const cleanupInput = setupInput(canvas);
   const context = setupContext(canvas);
   const particles = createParticles();
+  const activeParticles: Particle[] = [];
 
   renderBackground(context);
 
@@ -149,20 +154,26 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}):
         spawnIndex %= config.cachedParticles;
 
         const particle = particles[spawnIndex];
-        particle.active = true;
+        if (!particle.active) {
+          particle.active = true;
+          activeParticles.push(particle);
+        }
         particle.lifetime = config.lifetime;
         particle.x = input.x;
         particle.y = input.y;
       }
 
-      for (let i = 0; i < particles.length; i++) {
-        const particle = particles[i];
-        if (!particle.active) continue;
+      for (let i = activeParticles.length - 1; i >= 0; i--) {
+        const particle = activeParticles[i];
 
         // Lifetime
         particle.lifetime -= config.decay;
         if (particle.lifetime <= 0) {
           particle.active = false;
+          const lastParticle = activeParticles.pop();
+          if (lastParticle && lastParticle !== particle) {
+            activeParticles[i] = lastParticle;
+          }
           continue;
         }
 
@@ -189,7 +200,7 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}):
         else if (yIndex >= config.imageHeight) yIndex = config.imageHeight - 1;
 
         // Render
-        context.fillStyle = pixelData[xIndex][yIndex];
+        context.fillStyle = pixelData[yIndex * config.imageWidth + xIndex];
         const size = particle.lifetime * config.size;
         context.fillRect(particle.x, particle.y, size, size);
       }

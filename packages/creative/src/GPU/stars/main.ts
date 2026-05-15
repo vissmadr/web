@@ -1,4 +1,3 @@
-import { Random } from "@utilities/random";
 import { WebGL } from "@utilities/webgl";
 
 import { Config, defaultConfig } from "./config";
@@ -11,7 +10,7 @@ import renderFragment from "./shaders/render-fragment.glsl";
 let config: Config;
 
 function setupGL(canvas: HTMLCanvasElement) {
-  const gl = canvas.getContext("webgl2");
+  const gl = canvas.getContext("webgl2", { alpha: false, antialias: false, powerPreference: "high-performance" });
   if (!gl) throw new Error("Failed to get WebGL2 context");
 
   canvas.width = config.width;
@@ -43,21 +42,21 @@ function setupPrograms(gl: WebGL2RenderingContext) {
 }
 
 function generateData() {
-  const positions: number[] = [];
+  const positions = new Float32Array(config.particles * 2);
   for (let i = 0; i < config.particles; i++) {
-    positions.push(Random.range(0, 1));
-    positions.push(Random.range(0, 1));
+    const index = i * 2;
+    positions[index] = Math.random();
+    positions[index + 1] = Math.random();
   }
 
-  const random: number[] = [];
+  const random = new Float32Array(config.particles);
   for (let i = 0; i < config.particles; i++) {
-    const r = Math.random();
-    random.push(r ** 6);
+    random[i] = Math.random() ** 6;
   }
 
   return {
-    positions: new Float32Array(positions),
-    random: new Float32Array(random),
+    positions,
+    random,
   };
 }
 

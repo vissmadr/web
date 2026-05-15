@@ -40,7 +40,7 @@ function setupContext(canvas: HTMLCanvasElement) {
   canvas.width = config.size;
   canvas.height = config.size;
 
-  const context = canvas.getContext("2d");
+  const context = canvas.getContext("2d", { alpha: false, desynchronized: true });
   if (!context) throw "Cannot get 2d context";
 
   context.lineWidth = config.lineWidth;

@@ -17,7 +17,7 @@ type Config = typeof defaultConfig;
 let config: Config;
 
 function setupGL(canvas: HTMLCanvasElement) {
-  const gl = canvas.getContext("webgl2");
+  const gl = canvas.getContext("webgl2", { alpha: false, antialias: false, powerPreference: "high-performance" });
   if (!gl) throw new Error("Failed to get WebGL2 context");
 
   canvas.width = config.canvasWidth;
@@ -54,7 +54,7 @@ function setupState(gl: WebGL2RenderingContext, program: WebGLProgram) {
   gl.enableVertexAttribArray(location);
   gl.vertexAttribPointer(location, 2, gl.FLOAT, false, 0, 0);
 
-  return vao;
+  return { vao, buffer } as const;
 }
 
 export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}): () => void {
@@ -62,7 +62,7 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}):
 
   const gl = setupGL(canvas);
   const program = setupProgram(gl);
-  const vao = setupState(gl, program);
+  const { vao, buffer } = setupState(gl, program);
   const locations = {
     uNoiseFrequency: gl.getUniformLocation(program, "u_noiseFrequency"),
     uTime: gl.getUniformLocation(program, "u_time"),
@@ -81,7 +81,6 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}):
     time += config.timeIncrement;
 
     gl.uniform1f(locations.uTime, time);
-    gl.clear(gl.COLOR_BUFFER_BIT);
     gl.drawArrays(gl.TRIANGLES, 0, 6);
 
     animationId = requestAnimationFrame(animation);
@@ -92,6 +91,7 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}):
   return () => {
     cancelAnimationFrame(animationId);
     gl.deleteVertexArray(vao);
+    gl.deleteBuffer(buffer);
     gl.deleteProgram(program);
   };
 }

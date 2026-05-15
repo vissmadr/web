@@ -17,7 +17,6 @@ type Config = typeof defaultConfig;
 
 let config: Config;
 
-const images: HTMLImageElement[] = [];
 let pointerX: number = 0;
 let pointerY: number = 0;
 
@@ -56,7 +55,7 @@ function loadImages(sources: string[], target: HTMLImageElement[], onAllLoaded: 
 }
 
 function setupGL(canvas: HTMLCanvasElement) {
-  const gl = canvas.getContext("webgl2");
+  const gl = canvas.getContext("webgl2", { alpha: false, antialias: false, powerPreference: "high-performance" });
   if (!gl) throw new Error("Failed to get WebGL2 context");
 
   canvas.width = config.width;
@@ -89,7 +88,7 @@ function setupUniforms(gl: WebGL2RenderingContext, program: WebGLProgram) {
   } as const;
 }
 
-function setupState(gl: WebGL2RenderingContext, program: WebGLProgram) {
+function setupState(gl: WebGL2RenderingContext, program: WebGLProgram, images: HTMLImageElement[]) {
   const attributes = {
     a_position: gl.getAttribLocation(program, "a_position"),
     a_textureCoordinates: gl.getAttribLocation(program, "a_textureCoordinates"),
@@ -99,6 +98,8 @@ function setupState(gl: WebGL2RenderingContext, program: WebGLProgram) {
   gl.bindVertexArray(vao);
 
   const positionBuffer = gl.createBuffer();
+  const textureCoordinatesBuffer = gl.createBuffer();
+  const textures: WebGLTexture[] = [];
   // aPosition
   gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
   gl.bufferData(
@@ -110,7 +111,7 @@ function setupState(gl: WebGL2RenderingContext, program: WebGLProgram) {
   gl.vertexAttribPointer(attributes.a_position, 2, gl.FLOAT, false, 0, 0);
 
   // aTextureCoordinates
-  gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+  gl.bindBuffer(gl.ARRAY_BUFFER, textureCoordinatesBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(WebGL.Points.rectangle(0, 0, 1, 1)), gl.STATIC_DRAW);
   gl.enableVertexAttribArray(attributes.a_textureCoordinates);
   gl.vertexAttribPointer(attributes.a_textureCoordinates, 2, gl.FLOAT, false, 0, 0);
@@ -119,7 +120,11 @@ function setupState(gl: WebGL2RenderingContext, program: WebGLProgram) {
   for (let i = 0; i < 4; i++) {
     gl.activeTexture(gl.TEXTURE0 + i);
 
-    gl.bindTexture(gl.TEXTURE_2D, gl.createTexture());
+    const texture = gl.createTexture();
+    if (!texture) throw new Error("Failed to create texture");
+    textures.push(texture);
+
+    gl.bindTexture(gl.TEXTURE_2D, texture);
 
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
@@ -129,28 +134,28 @@ function setupState(gl: WebGL2RenderingContext, program: WebGLProgram) {
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, images[i]);
   }
 
-  return vao;
+  return { vao, positionBuffer, textureCoordinatesBuffer, textures } as const;
 }
 
 export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}): () => void {
   config = { ...defaultConfig, ...settings };
 
   const sources = [img0, img1, img2, img3];
+  const images: HTMLImageElement[] = [];
 
-  const animationState = { id: 0 };
   let cleanupPointer: (() => void) | undefined;
   let gl: WebGL2RenderingContext | undefined;
   let program: WebGLProgram | undefined;
-  let vao: WebGLVertexArrayObject | null | undefined;
+  let resources: ReturnType<typeof setupState> | undefined;
 
   loadImages(sources, images, () => {
     gl = setupGL(canvas);
     program = setupProgram(gl);
     const uniforms = setupUniforms(gl, program);
-    vao = setupState(gl, program);
+    resources = setupState(gl, program, images);
 
     gl.useProgram(program);
-    gl.bindVertexArray(vao);
+    gl.bindVertexArray(resources.vao);
 
     gl.uniform2f(uniforms.u_resolution, gl.canvas.width, gl.canvas.height);
     gl.uniform1i(uniforms.u_image0, 0);
@@ -158,25 +163,26 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}):
     gl.uniform1i(uniforms.u_image2, 2);
     gl.uniform1i(uniforms.u_image3, 3);
 
-    const animation = () => {
+    const render = () => {
       gl!.uniform2f(uniforms.u_pointer, pointerX, canvas.height - pointerY);
-
       gl!.drawArrays(gl!.TRIANGLES, 0, 6);
-
-      animationState.id = requestAnimationFrame(animation);
     };
 
-    animationState.id = requestAnimationFrame(animation);
+    render();
 
-    cleanupPointer = setupPointer(animation, canvas);
+    cleanupPointer = setupPointer(render, canvas);
   });
 
   return () => {
-    cancelAnimationFrame(animationState.id);
     cleanupPointer?.();
     if (gl) {
       if (program) gl.deleteProgram(program);
-      if (vao) gl.deleteVertexArray(vao);
+      if (resources) {
+        gl.deleteVertexArray(resources.vao);
+        gl.deleteBuffer(resources.positionBuffer);
+        gl.deleteBuffer(resources.textureCoordinatesBuffer);
+        for (const texture of resources.textures) gl.deleteTexture(texture);
+      }
     }
   };
 }

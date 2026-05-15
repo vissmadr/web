@@ -1,4 +1,3 @@
-import { Random } from "@utilities/random";
 import { WebGL } from "@utilities/webgl";
 
 import computeVertex from "./compute-vertex.glsl";
@@ -43,24 +42,26 @@ function setupPrograms(gl: WebGL2RenderingContext) {
 }
 
 function generatePositionData() {
-  const positions: number[] = [];
+  const positions = new Float32Array(config.particlesCount * 2);
   for (let i = 0; i < config.particlesCount; i++) {
-    positions.push(Random.range(0, 1));
-    positions.push(Random.range(0, 1));
+    const index = i * 2;
+    positions[index] = Math.random();
+    positions[index + 1] = Math.random();
   }
   return positions;
 }
 
 function generateVelocityData() {
-  const velocities: number[] = [];
+  const velocities = new Float32Array(config.particlesCount * 2);
   for (let i = 0; i < config.particlesCount; i++) {
-    const angle = Random.rangeInt(0, 360);
+    const angle = Math.random() * Math.PI * 2;
 
     const sin = Math.sin(angle);
     const cos = Math.cos(angle);
 
-    velocities.push(cos);
-    velocities.push(sin);
+    const index = i * 2;
+    velocities[index] = cos;
+    velocities[index + 1] = sin;
   }
   return velocities;
 }
@@ -68,9 +69,13 @@ function generateVelocityData() {
 function setupTexture(gl: WebGL2RenderingContext) {
   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
   gl.activeTexture(gl.TEXTURE0);
-  gl.bindTexture(gl.TEXTURE_2D, gl.createTexture());
+  const texture = gl.createTexture();
+  if (!texture) throw new Error("Failed to create texture");
+  gl.bindTexture(gl.TEXTURE_2D, texture);
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
   WebGL.Texture.applyClampAndNearest(gl);
+
+  return texture;
 }
 
 function setupUniformBlock(gl: WebGL2RenderingContext, computeProgram: WebGLProgram, renderProgram: WebGLProgram) {
@@ -107,8 +112,8 @@ function setupState(gl: WebGL2RenderingContext, computeProgram: WebGLProgram, re
   } as const;
 
   const data = {
-    positions: new Float32Array(generatePositionData()),
-    velocities: new Float32Array(generateVelocityData()),
+    positions: generatePositionData(),
+    velocities: generateVelocityData(),
   } as const;
 
   const buffers = {
@@ -201,7 +206,7 @@ function setupState(gl: WebGL2RenderingContext, computeProgram: WebGLProgram, re
 export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}): () => void {
   config = { ...defaultConfig, ...settings };
 
-  const gl = canvas.getContext("webgl2");
+  const gl = canvas.getContext("webgl2", { alpha: false, antialias: false, powerPreference: "high-performance" });
   if (!gl) throw new Error("Failed to get WebGL2 context");
 
   canvas.width = config.canvasWidth;
@@ -213,6 +218,7 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}):
 
   let glResources: {
     programs: ReturnType<typeof setupPrograms>;
+    texture: WebGLTexture;
     buffers: { positionHeads: WebGLBuffer; positionTails: WebGLBuffer; velocity: WebGLBuffer };
     vertexArrayObjects: { computeHeads: WebGLVertexArrayObject | null; computeTails: WebGLVertexArrayObject | null; renderHeads: WebGLVertexArrayObject | null; renderTails: WebGLVertexArrayObject | null };
     transformFeedbacks: { firstPosition: WebGLTransformFeedback | null; nextPosition: WebGLTransformFeedback | null };
@@ -223,9 +229,8 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}):
 
     const { buffers, vertexArrayObjects, transformFeedbacks } = setupState(gl, programs.compute, programs.render);
 
-    glResources = { programs, buffers, vertexArrayObjects, transformFeedbacks };
-
-    setupTexture(gl);
+    const texture = setupTexture(gl);
+    glResources = { programs, texture, buffers, vertexArrayObjects, transformFeedbacks };
 
     let swapOne = {
       computeVAO: vertexArrayObjects.computeHeads,
@@ -303,6 +308,7 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}):
       gl.deleteBuffer(buffers.positionHeads);
       gl.deleteBuffer(buffers.positionTails);
       gl.deleteBuffer(buffers.velocity);
+      gl.deleteTexture(glResources.texture);
     }
   };
 }

@@ -26,7 +26,7 @@ type Particle = {
 };
 
 function setup(canvas: HTMLCanvasElement): CanvasRenderingContext2D {
-  const context = canvas.getContext("2d");
+  const context = canvas.getContext("2d", { alpha: false, desynchronized: true });
   if (!context) throw "Cannot get 2d context";
 
   canvas.width = config.width;
@@ -99,7 +99,8 @@ export function main(canvas: HTMLCanvasElement): () => void {
     drawQuadtreeBounds(context, quadtree);
   });
 
-  const intervalId = setInterval(() => {
+  let animationId = 0;
+  const loop = () => {
     quadtree.reset();
 
     drawBackground(context);
@@ -108,8 +109,8 @@ export function main(canvas: HTMLCanvasElement): () => void {
     for (let i = 0; i < config.particle.count; i++) {
       const particle = particles[i];
 
-      particle.x += Random.range(-1, 1);
-      particle.y += Random.range(-1, 1);
+      particle.x += Math.random() * 2 - 1;
+      particle.y += Math.random() * 2 - 1;
 
       drawParticle(context, particle);
 
@@ -119,9 +120,13 @@ export function main(canvas: HTMLCanvasElement): () => void {
     quadtree.rootRecursion((quadtree) => {
       drawQuadtreeBounds(context, quadtree);
     });
-  }, 1000 / config.FPS);
+
+    animationId = requestAnimationFrame(loop);
+  };
+
+  animationId = requestAnimationFrame(loop);
 
   return () => {
-    clearInterval(intervalId);
+    cancelAnimationFrame(animationId);
   };
 }

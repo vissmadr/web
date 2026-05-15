@@ -31,7 +31,7 @@ function setupContext(canvas: HTMLCanvasElement) {
   canvas.width = config.width;
   canvas.height = config.height;
 
-  const context = canvas.getContext("2d");
+  const context = canvas.getContext("2d", { alpha: false, desynchronized: true });
   if (!context) throw "Cannot get 2d context";
 
   context.fillStyle = config.colors.particle;
@@ -54,6 +54,14 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}):
   const angleStep = Mathematics.TAU / config.particleCount;
   const xCenter = config.width * 0.5;
   const yCenter = config.height * 0.5;
+  const cosines = new Float32Array(config.particleCount + 1);
+  const sines = new Float32Array(config.particleCount + 1);
+
+  for (let i = 0; i <= config.particleCount; i++) {
+    const angle = angleStep * i;
+    cosines[i] = Math.cos(angle);
+    sines[i] = Math.sin(angle);
+  }
 
   let time = 0;
   let animationId: number;
@@ -65,10 +73,8 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}):
     context.beginPath();
 
     for (let i = 0; i <= config.particleCount; i++) {
-      const angle = angleStep * i;
-
-      const cos = Math.cos(angle);
-      const sin = Math.sin(angle);
+      const cos = cosines[i];
+      const sin = sines[i];
 
       const noiseValue =
         config.noiseRadius * Noise.Simplex.get(cos * config.noiseFrequency + time, sin * config.noiseFrequency - time);

@@ -76,7 +76,7 @@ function setupInput(canvas: HTMLCanvasElement) {
 }
 
 function setupGL(canvas: HTMLCanvasElement) {
-  const gl = canvas.getContext("webgl2");
+  const gl = canvas.getContext("webgl2", { alpha: false, antialias: false, powerPreference: "high-performance" });
   if (!gl) throw new Error("Failed to get WebGL2 context");
 
   canvas.width = config.width;
@@ -125,7 +125,8 @@ function setupState(gl: WebGL2RenderingContext, program: WebGLProgram) {
   const vertexArrayObject = gl.createVertexArray();
   gl.bindVertexArray(vertexArrayObject);
 
-  gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+  const canvasVertexBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, canvasVertexBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, data.canvasVertices, gl.STATIC_DRAW);
   gl.enableVertexAttribArray(attributes.a_canvasVertices);
   gl.vertexAttribPointer(attributes.a_canvasVertices, 2, gl.FLOAT, false, 0, 0);
@@ -143,7 +144,7 @@ function setupState(gl: WebGL2RenderingContext, program: WebGLProgram) {
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, config.cols, config.rows, 0, gl.RGBA, gl.UNSIGNED_BYTE, data.state);
   setTextureSettings(gl);
 
-  return { framebuffer, vertexArrayObject, textures } as const;
+  return { framebuffer, vertexArrayObject, canvasVertexBuffer, textures } as const;
 }
 
 function setupUniforms(gl: WebGL2RenderingContext, program: WebGLProgram) {
@@ -172,7 +173,7 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}):
   const gl = setupGL(canvas);
   const program = setupProgram(gl);
   const uniforms = setupUniforms(gl, program);
-  const { vertexArrayObject, textures, framebuffer } = setupState(gl, program);
+  const { vertexArrayObject, canvasVertexBuffer, textures, framebuffer } = setupState(gl, program);
 
   gl.useProgram(program);
   gl.bindVertexArray(vertexArrayObject);
@@ -237,6 +238,7 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}):
     cleanupInput();
     gl.deleteProgram(program);
     gl.deleteVertexArray(vertexArrayObject);
+    gl.deleteBuffer(canvasVertexBuffer);
     gl.deleteTexture(textures.heads);
     gl.deleteTexture(textures.tails);
     gl.deleteFramebuffer(framebuffer);

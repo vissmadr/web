@@ -8,7 +8,7 @@ function setupContext(canvas: HTMLCanvasElement) {
   canvas.width = Config.width;
   canvas.height = Config.height;
 
-  const context = canvas.getContext("2d");
+  const context = canvas.getContext("2d", { alpha: false, desynchronized: true });
   if (!context) throw "Cannot get 2d context";
 
   return context;
@@ -42,6 +42,8 @@ export function main(canvas: HTMLCanvasElement): () => void {
     }
   } else if (Config.runtime === Config.Runtime.ANIMATED) {
     const loop = () => {
+      if (Algorithm.getHasEnded()) return;
+
       Algorithm.iterate();
       renderer.drawCells(cells);
       animationId = requestAnimationFrame(loop);

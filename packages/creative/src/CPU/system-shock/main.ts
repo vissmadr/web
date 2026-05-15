@@ -35,7 +35,7 @@ function setupContext(canvas: HTMLCanvasElement, config: Config) {
   canvas.width = config.width;
   canvas.height = config.height;
 
-  const context = canvas.getContext("2d");
+  const context = canvas.getContext("2d", { alpha: false, desynchronized: true, willReadFrequently: true });
   if (!context) throw "Cannot get 2d context";
 
   return context;
@@ -48,7 +48,7 @@ function createImageData(context: CanvasRenderingContext2D, image: HTMLImageElem
 
   context.clearRect(0, 0, config.width, config.height);
 
-  const arr: number[][] = [];
+  const arr = new Uint8Array(config.imageWidth * config.imageHeight);
 
   const step = (255 * 3) / config.characters.length;
 
@@ -58,19 +58,15 @@ function createImageData(context: CanvasRenderingContext2D, image: HTMLImageElem
     const b = imageData[i + 2];
 
     const index = i / 4;
-    const x = index % config.imageWidth;
-    const y = Math.floor(index / config.imageWidth);
-
-    if (!arr[x]) arr[x] = [];
     // arr[x][y] = `rgb(${r},${g},${b})`;
-    arr[x][y] = Math.floor((r + g + b) / step);
+    arr[index] = Math.min(Math.floor((r + g + b) / step), config.characters.length - 1);
   }
 
   return arr;
 }
 
 function createSprites(color: string, config: Config) {
-  const sprites: HTMLImageElement[] = [];
+  const sprites: HTMLCanvasElement[] = [];
 
   const width = config.spriteWidth;
   const height = config.spriteHeight;
@@ -79,35 +75,30 @@ function createSprites(color: string, config: Config) {
 
   const yOffset = height * 0.1;
 
-  const offscreenCanvas = document.createElement("canvas");
-  offscreenCanvas.width = width;
-  offscreenCanvas.height = height;
-
-  const offscreenContext = offscreenCanvas.getContext("2d");
-  if (!offscreenContext) throw "Cannot get 2d context!";
-  offscreenContext.font = `${width}px Arial, sans-serif`;
-  offscreenContext.fillStyle = color;
-  offscreenContext.textAlign = "center";
-  offscreenContext.textBaseline = "middle";
-  offscreenContext.textRendering = "optimizeLegibility";
-
   for (let i = 0; i < config.characters.length; i++) {
-    offscreenContext.fillStyle = config.colors.background;
-    offscreenContext.fillRect(0, 0, width, height);
-    offscreenContext.fillStyle = color;
-    offscreenContext.fillText(config.characters[i], halfWidth, halfHeight + yOffset);
+    const sprite = document.createElement("canvas");
+    sprite.width = width;
+    sprite.height = height;
 
-    const img = new Image();
-    img.src = offscreenCanvas.toDataURL();
+    const spriteContext = sprite.getContext("2d", { alpha: false });
+    if (!spriteContext) throw "Cannot get 2d context!";
+    spriteContext.font = `${width}px Arial, sans-serif`;
+    spriteContext.textAlign = "center";
+    spriteContext.textBaseline = "middle";
+    spriteContext.textRendering = "optimizeLegibility";
+    spriteContext.fillStyle = config.colors.background;
+    spriteContext.fillRect(0, 0, width, height);
+    spriteContext.fillStyle = color;
+    spriteContext.fillText(config.characters[i], halfWidth, halfHeight + yOffset);
 
-    sprites.push(img);
+    sprites.push(sprite);
   }
 
   return sprites;
 }
 
 function createAllSprites(config: Config) {
-  const allSprites: HTMLImageElement[][] = [];
+  const allSprites: HTMLCanvasElement[][] = [];
 
   for (let i = 0; i < config.characters.length; i++) {
     const brightness = config.minBrightness + (i * (1 - config.minBrightness)) / config.characters.length;
@@ -128,26 +119,38 @@ function start(canvas: HTMLCanvasElement, image: HTMLImageElement, config: Confi
 
   const xRatio = config.width / config.imageWidth;
   const yRatio = config.height / config.imageHeight;
+  const xPositions = new Float32Array(config.imageWidth);
+  const yPositions = new Float32Array(config.imageHeight);
+  const xNoiseOffsets = new Float32Array(config.imageWidth);
+  const updateCount = Math.max(1, Math.floor(config.imageWidth * config.imageHeight * config.updateChance));
+
+  for (let x = 0; x < config.imageWidth; x++) {
+    xPositions[x] = x * xRatio;
+    xNoiseOffsets[x] = x * config.noiseFrequency;
+  }
+
+  for (let y = 0; y < config.imageHeight; y++) {
+    yPositions[y] = y * yRatio;
+  }
 
   let time = 0;
   const animation = () => {
     time += config.timeIncrement;
 
-    for (let x = 0; x < imageData.length; x++) {
-      for (let y = 0; y < imageData[x].length; y++) {
-        if (Math.random() > config.updateChance) continue;
+    for (let i = 0; i < updateCount; i++) {
+      const x = (Math.random() * config.imageWidth) | 0;
+      const y = (Math.random() * config.imageHeight) | 0;
 
-        const brightness = imageData[x][y];
+        const brightness = imageData[y * config.imageWidth + x];
 
-        const xNoise = x * config.noiseFrequency;
+        const xNoise = xNoiseOffsets[x];
         const yNoise = (y + time) * config.noiseFrequency;
-        const character = Math.floor(Noise.Simplex.get(xNoise, yNoise) * config.characters.length);
+        const character = Math.min(
+          Math.floor(Noise.Simplex.get(xNoise, yNoise) * config.characters.length),
+          config.characters.length - 1,
+        );
 
-        const xPosition = x * xRatio;
-        const yPosition = y * yRatio;
-
-        context.drawImage(allSprites[brightness][character], xPosition, yPosition);
-      }
+      context.drawImage(allSprites[brightness][character], xPositions[x], yPositions[y]);
     }
 
     animationState.id = requestAnimationFrame(animation);

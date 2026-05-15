@@ -71,18 +71,19 @@ function setupPrograms(gl: WebGL2RenderingContext) {
 }
 
 function generateData() {
-  const positions: number[] = [];
+  const positions = new Float32Array(config.xCount * config.yCount * 2);
+  let index = 0;
 
   for (let x = 0; x < config.xCount; x++) {
     for (let y = 0; y < config.yCount; y++) {
       const xPosition = config.offset + ((1 - config.offset * 2) / config.xCount) * x;
       const yPosition = config.offset + ((1 - config.offset * 2) / config.yCount) * y;
-      positions.push(xPosition);
-      positions.push(yPosition);
+      positions[index++] = xPosition;
+      positions[index++] = yPosition;
     }
   }
 
-  return { position: new Float32Array(positions) } as const;
+  return { position: positions } as const;
 }
 
 function setupUniforms(gl: WebGL2RenderingContext, computeProgram: WebGLProgram, renderProgram: WebGLProgram) {
@@ -233,7 +234,7 @@ function setupState(gl: WebGL2RenderingContext, computeProgram: WebGLProgram, re
 }
 
 function setupGL(canvas: HTMLCanvasElement) {
-  const gl = canvas.getContext("webgl2");
+  const gl = canvas.getContext("webgl2", { alpha: false, antialias: false, powerPreference: "high-performance" });
   if (!gl) throw new Error("Failed to get WebGL2 context");
 
   canvas.width = config.width;
