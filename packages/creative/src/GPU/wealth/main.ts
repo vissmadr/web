@@ -17,7 +17,7 @@ const input = {
 };
 
 function setupGL(canvas: HTMLCanvasElement) {
-  const gl = canvas.getContext("webgl2", { alpha: false, antialias: false, powerPreference: "high-performance" });
+  const gl = canvas.getContext("webgl2");
   if (!gl) throw new Error("Failed to get WebGL2 context");
 
   canvas.width = config.width;

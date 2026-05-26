@@ -1,8 +1,8 @@
 .card {
   overflow: hidden;
   width: min(100%, 300px);
-  background: #2d2d2d;
-  border: 1px solid #3a3a3a;
+  background: #323232;
+  border: 1px solid #424242;
   border-radius: 10px;
   opacity: 0.86;
   transition:
@@ -35,6 +35,7 @@
 .image {
   width: 100%;
   aspect-ratio: 1 / 1;
+  border: 1px solid #454545;
   border-radius: 7px;
   object-fit: cover;
 }

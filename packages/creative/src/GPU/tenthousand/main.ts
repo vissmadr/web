@@ -69,13 +69,9 @@ function generateVelocityData() {
 function setupTexture(gl: WebGL2RenderingContext) {
   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
   gl.activeTexture(gl.TEXTURE0);
-  const texture = gl.createTexture();
-  if (!texture) throw new Error("Failed to create texture");
-  gl.bindTexture(gl.TEXTURE_2D, texture);
+  gl.bindTexture(gl.TEXTURE_2D, gl.createTexture());
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
   WebGL.Texture.applyClampAndNearest(gl);
-
-  return texture;
 }
 
 function setupUniformBlock(gl: WebGL2RenderingContext, computeProgram: WebGLProgram, renderProgram: WebGLProgram) {
@@ -206,7 +202,7 @@ function setupState(gl: WebGL2RenderingContext, computeProgram: WebGLProgram, re
 export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}): () => void {
   config = { ...defaultConfig, ...settings };
 
-  const gl = canvas.getContext("webgl2", { alpha: false, antialias: false, powerPreference: "high-performance" });
+  const gl = canvas.getContext("webgl2");
   if (!gl) throw new Error("Failed to get WebGL2 context");
 
   canvas.width = config.canvasWidth;
@@ -218,7 +214,6 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}):
 
   let glResources: {
     programs: ReturnType<typeof setupPrograms>;
-    texture: WebGLTexture;
     buffers: { positionHeads: WebGLBuffer; positionTails: WebGLBuffer; velocity: WebGLBuffer };
     vertexArrayObjects: { computeHeads: WebGLVertexArrayObject | null; computeTails: WebGLVertexArrayObject | null; renderHeads: WebGLVertexArrayObject | null; renderTails: WebGLVertexArrayObject | null };
     transformFeedbacks: { firstPosition: WebGLTransformFeedback | null; nextPosition: WebGLTransformFeedback | null };
@@ -229,8 +224,9 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}):
 
     const { buffers, vertexArrayObjects, transformFeedbacks } = setupState(gl, programs.compute, programs.render);
 
-    const texture = setupTexture(gl);
-    glResources = { programs, texture, buffers, vertexArrayObjects, transformFeedbacks };
+    glResources = { programs, buffers, vertexArrayObjects, transformFeedbacks };
+
+    setupTexture(gl);
 
     let swapOne = {
       computeVAO: vertexArrayObjects.computeHeads,
@@ -308,7 +304,6 @@ export function main(canvas: HTMLCanvasElement, settings: Partial<Config> = {}):
       gl.deleteBuffer(buffers.positionHeads);
       gl.deleteBuffer(buffers.positionTails);
       gl.deleteBuffer(buffers.velocity);
-      gl.deleteTexture(glResources.texture);
     }
   };
 }
